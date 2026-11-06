@@ -232,6 +232,79 @@
   </div>
 </section>
 
+<!-- SELECTED CASE STUDIES -->
+<section id="case-studies">
+  <div class="sectionhead">
+    <div>
+      <div class="eyebrow">Selected case studies / How I solve problems</div>
+      <h2>Behind the solution.</h2>
+    </div>
+    <p>
+      A closer look at how I investigate technical issues, connect the dots,
+      and help customers move forward.
+    </p>
+  </div>
+
+  <div class="projects">
+    <article class="project">
+      <span class="number">01</span>
+      <h3>When Shopify orders stopped syncing</h3>
+      <p>
+        Investigating missing order confirmations between Shopify and a referral platform.
+      </p>
+      <span class="tag">SQL</span>
+      <span class="tag">Integrations</span>
+      <span class="tag">Cross-team escalation</span>
+      <details>
+        <summary>Read case study</summary>
+        <p><strong>Challenge.</strong> A client reported that Shopify orders were no longer appearing in the referral platform, affecting visibility into referral activity and rewards.</p>
+        <p><strong>Investigation.</strong> I reviewed SQL reports and historical order activity to establish that orders had previously been received, then identified when incoming confirmations stopped. I coordinated with the relevant teams to narrow down where the data flow was failing.</p>
+        <p><strong>Action.</strong> I documented the evidence for Engineering, communicated the investigation status to the client, and proposed manual referral credits as an interim workaround.</p>
+        <p><strong>Outcome.</strong> The escalation included a clearer timeline and supporting data, while the client had a proposed path to address affected rewards during the investigation. I did not independently deploy an integration fix.</p>
+      </details>
+    </article>
+
+    <article class="project">
+      <span class="number">02</span>
+      <h3>The mystery of the RDC queue</h3>
+      <p>
+        Tracing unexpected manual-review volume in a digital banking application.
+      </p>
+      <span class="tag">Digital banking</span>
+      <span class="tag">Pattern analysis</span>
+      <span class="tag">Escalation</span>
+      <details>
+        <summary>Read case study</summary>
+        <p><strong>Challenge.</strong> Approximately 98% of remote deposit capture submissions were entering manual review, despite no obvious error in the user interface.</p>
+        <p><strong>Investigation.</strong> I tested the issue, investigated its intermittent behavior, and checked with the vendor. Comparing affected clients revealed that they were on the same application pod.</p>
+        <p><strong>Action.</strong> I escalated the pod-level pattern and relevant settings for further investigation rather than treating each client's report as an isolated issue.</p>
+        <p><strong>Outcome.</strong> The investigation narrowed the likely scope to a shared environment and gave the receiving team a more targeted starting point. Final root cause and remediation were outside my confirmed findings.</p>
+      </details>
+    </article>
+
+    <article class="project">
+      <span class="number">03</span>
+      <h3>Finding discrepancies in HR data</h3>
+      <p>
+        Using self-taught SQL to investigate benefits, enrollment, and access issues.
+      </p>
+      <span class="tag">SQL joins</span>
+      <span class="tag">Data integrity</span>
+      <span class="tag">HR technology</span>
+      <details>
+        <summary>Read case study</summary>
+        <p><strong>Challenge.</strong> Customer-reported issues involved missing benefits, enrollment-file mismatches, and access discrepancies that could not be explained by the interface alone.</p>
+        <p><strong>Investigation.</strong> I taught myself SQL joins and subqueries so I could compare records, review imported file values, and investigate discrepancies directly in the underlying data.</p>
+        <p><strong>Action.</strong> I checked source-file formatting, account and enrollment records, and relevant access information before fixing permitted data issues or preparing evidence for escalation.</p>
+        <p><strong>Outcome.</strong> This approach enabled more independent investigation and better-informed handoffs, reducing reliance on others for basic data checks.</p>
+      </details>
+    </article>
+  </div>
+  <p style="font-size:12px;color:var(--muted);margin-top:20px">
+    Case studies are summarized from professional experience and omit confidential client details.
+  </p>
+</section>
+
 <!-- PROJECTS -->
 <section id="projects">
   <div class="sectionhead">
