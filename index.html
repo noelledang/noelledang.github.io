@@ -299,6 +299,23 @@
         <p><strong>Outcome.</strong> This approach enabled more independent investigation and better-informed handoffs, reducing reliance on others for basic data checks.</p>
       </details>
     </article>
+    <article class="project">
+      <span class="number">04</span>
+      <h3>Tracing a 401 error to a Cloudflare rule</h3>
+      <p>
+        Restoring remote deposit connectivity for a self-hosted financial institution.
+      </p>
+      <span class="tag">HTTP 401</span>
+      <span class="tag">PowerShell</span>
+      <span class="tag">DNS / WAF</span>
+      <details>
+        <summary>Read case study</summary>
+        <p><strong>Challenge.</strong> Remote Deposit Capture stopped working for a financial institution using its own infrastructure. Requests suddenly returned HTTP 401 authentication errors.</p>
+        <p><strong>Investigation.</strong> I verified DNS resolution and IP allowlisting, then tested connectivity from our application servers using PowerShell and HTTPS requests. The traffic reached the client environment, but the expected authentication headers were missing.</p>
+        <p><strong>Action.</strong> The evidence pointed to an intermediary security layer rather than a basic connectivity issue. We traced the missing credentials to a newly introduced Cloudflare Web Application Firewall (WAF) rule, and the client adjusted its configuration.</p>
+        <p><strong>Outcome.</strong> Remote Deposit Capture resumed immediately after the rule change, restoring service for the financial institution. The investigation isolated an infrastructure configuration issue without requiring a change to the application.</p>
+      </details>
+    </article>
   </div>
   <p style="font-size:12px;color:var(--muted);margin-top:20px">
     Case studies are summarized from professional experience and omit confidential client details.
