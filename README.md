@@ -1,25 +1,40 @@
-# Noelle Dang — Personal Portfolio
+# Noelle Dang | Technical Support Portfolio
 
-A responsive, build-free portfolio for GitHub Pages. No packages, accounts, or API keys are needed to run the pages.
+**[View my live portfolio](https://noelledang.github.io/)**
 
-## Publish with GitHub Pages
+I built this personal portfolio to show how I approach technical support: investigating issues, connecting evidence across systems, communicating clearly, and improving the customer experience. Rather than relying on a resume alone, I wanted a simple, accessible place for recruiters and hiring teams to explore my experience and real examples of my work.
 
-1. Sign in to GitHub as `noelledang` and create a public repository named `noelledang.github.io` (if it already exists, inspect it before replacing anything).
-2. Extract this ZIP. Upload the contents of this folder into the repository root, including `index.html` and `resume.html`. Do not upload the ZIP itself or place the files inside another folder.
-3. Commit the files to `main`.
-4. Open **Settings → Pages**. Under **Build and deployment**, select **Deploy from a branch**, choose **main** and **/(root)**, then **Save**.
-5. Wait for GitHub to report a successful deployment. The expected address is https://noelledang.github.io/.
+## Why I built it
 
-Official guide: https://docs.github.com/en/pages/quickstart
+I've worked across B2B SaaS products in fintech, HR technology, and marketing. Much of my impact happens behind the scenes—troubleshooting an integration, narrowing down the cause of an authentication failure, or making an escalation more actionable. I created this site to make that problem-solving process visible.
 
-## Preview and edit
+I chose a minimalist, editorial design with warm neutrals and burgundy accents. My priority was readability: visitors can scan the highlights quickly, then open the case studies that interest them.
 
-Open `index.html` in a browser for a local preview. Edit its text and styles using VS Code. `resume.html` is the printable resume; its button opens the browser print dialog, where visitors can choose Save as PDF.
+## What I worked on
 
-Both HTML files contain resume content; update both when changing experience or contact information. The design uses system fonts, has no external scripts or trackers, and includes keyboard focus styles and reduced-motion support.
+- **Portfolio structure and content:** Organized my professional experience, technical skills, hands-on projects, self-learning, and contact information around the questions a hiring manager might ask.
+- **Technical case studies:** Wrote up real troubleshooting scenarios involving Shopify order integrations, unexpected remote deposit review behavior, HR data discrepancies, and a Cloudflare WAF rule that caused HTTP 401 errors.
+- **Interactive presentation:** Used expandable case-study cards so visitors can see the challenge, investigation, action, and outcome without navigating away from the page.
+- **Responsive design:** Kept the layout readable on smaller screens, with keyboard-visible focus styles and reduced-motion support.
+- **Publishing and iteration:** Used GitHub to version changes, review pull requests, and publish the site through GitHub Pages.
 
-## Content notes
+## Technologies and tools
 
-Experience, dates, and metrics were based on “Noelle Dang (Tech Support).pdf” dated October 24, 2026. Personal introduction copy is drafted for review. The phone number is omitted from these public-facing pages. The printable version excludes the AI-checker instruction present in the original PDF.
+**HTML · CSS · Git · GitHub · GitHub Pages · VS Code**
 
-The website is prepared for publishing but is not live until GitHub Pages deployment succeeds. No repository was created automatically.
+This is a lightweight static website with no framework, build process, or external runtime dependencies. The resume page is formatted for browser printing and saving as a PDF.
+
+## My development approach
+
+I approached the site as a hands-on learning project. I defined the direction, selected the content, made design and usability decisions, tested the result, and iterated as I learned. I also used ChatGPT as an AI coding and troubleshooting assistant to help translate ideas into implementation and refine changes. The choices about what the portfolio should communicate, which cases to feature, and how the final experience should feel were mine.
+
+That process reflects how I work in technical support: start with a goal, investigate what isn't working, make a targeted change, validate the result, and improve from there.
+
+## Explore
+
+- **[Live website](https://noelledang.github.io/)**
+- **[Case studies](https://noelledang.github.io/#case-studies)**
+- **[Projects](https://noelledang.github.io/#projects)**
+- **[Resume](https://noelledang.github.io/resume.html)**
+
+*The professional case studies are summaries of real work and omit confidential customer information.*
