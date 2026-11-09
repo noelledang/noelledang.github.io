@@ -121,7 +121,7 @@
   let awaitingTraitExamples = false;
   function ask(question) {
     bubble(question, "visitor");
-    const reply = question.toLowerCase().replace(/[^a-z ]/g, " ").replace(/\\s+/g, " ").trim();
+    const reply = question.toLowerCase().replace(/[^a-z ]/g, " ").replace(/\s+/g, " ").trim();
     if (awaitingTraitExamples) {
       const confirmed = /^(yes|yes please|yeah|yep|sure|sure please|of course|please|absolutely|definitely|go ahead|tell me more|show me examples|give me examples|examples please|i would|i d love that)$/.test(reply)
         || /^(can you |could you |please )?(give|show|share|provide|tell)( me)?( some| a few)? examples/.test(reply);
