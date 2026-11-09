@@ -70,7 +70,7 @@
     .then((data) => {
       topics = Array.isArray(data.topics) ? data.topics : [];
       bubble("Hi! I'm Nina, Noelle's portfolio guide. Ask about her technical support experience, tools, projects, or troubleshooting case studies.", "bot");
-      ["How does Noelle troubleshoot API issues?", "What technical tools does she use?", "What has she built?"].forEach((question) => {
+      ["Why should we hire Noelle?","How does Noelle approach unfamiliar technical issues?","Is Noelle a fast learner?","What could Noelle contribute in her first 90 days?"].forEach((question) => {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "nina-question";
