@@ -218,7 +218,7 @@
     },
     {
       "id": "web-projects",
-      "title": "What websites has Noelle built?",
+      "title": "What projects has Noelle built?",
       "keywords": [
         "website",
         "websites",
@@ -231,7 +231,9 @@
         "typescript",
         "nextjs",
         "react",
-        "vercel"
+        "vercel",
+        "projects" , 
+        "works"
       ],
       "answer": "Using AI-assisted coding and self-directed learning, Noelle built a bilingual English/Vietnamese wedding website and developed a personal HTML/CSS portfolio. Her broader independent work also includes a construction business website. She has used VS Code, GitHub, and Vercel along with HTML, Next.js, React, and TypeScript to implement, debug, and publish web projects.",
       "link": "#projects",
