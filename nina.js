@@ -65,9 +65,9 @@
 
   function tokenize(value) {
     return String(value).toLowerCase()
-      .replace(/([a-z])'s\\b/g, "$1")
+      .replace(/([a-z])'s\b/g, "$1")
       .replace(/[^a-z0-9]+/g, " ")
-      .trim().split(/\\s+/).filter(Boolean)
+      .trim().split(/\s+/).filter(Boolean)
       .map(word => aliases[word] || word)
       .filter(word => !stopWords.has(word));
   }
