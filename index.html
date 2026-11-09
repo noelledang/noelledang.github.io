@@ -560,16 +560,15 @@
   </div>
 </footer>
 
-<!-- Nina: AI-powered portfolio assistant with curated fallback -->
+<!-- Nina: portfolio guide preview (curated answers; no AI API connected) -->
 <button class="nina-launch" id="nina-launch" type="button" aria-expanded="false" aria-controls="nina-panel">✦ Ask Nina</button>
 <aside class="nina-panel" id="nina-panel" aria-label="Nina portfolio assistant" hidden>
-  <div class="nina-head"><div><strong>Nina</strong><small id="nina-mode">Portfolio guide · Preview</small></div><button class="nina-close" id="nina-close" type="button" aria-label="Close Nina">×</button></div>
+  <div class="nina-head"><div><strong>Nina</strong><small>Portfolio guide · Preview</small></div><button class="nina-close" id="nina-close" type="button" aria-label="Close Nina">×</button></div>
   <div class="nina-messages" id="nina-messages" role="log" aria-live="polite" aria-relevant="additions text"></div>
   <div class="nina-prompts" id="nina-prompts" aria-label="Suggested questions"></div>
   <form class="nina-form" id="nina-form"><label class="sr-only" for="nina-input">Ask Nina about Noelle's experience</label><input class="nina-input" id="nina-input" type="text" maxlength="250" placeholder="Ask about skills, projects, cases..." autocomplete="off" required><button class="nina-send" type="submit">Ask</button></form>
-  <p class="nina-note">Answers use verified portfolio facts. AI is enabled only after backend setup; questions may be processed by an AI provider when enabled.</p>
+  <p class="nina-note">Curated portfolio answers, not generative AI. No questions are stored. For other details, contact Noelle.</p>
 </aside>
-<script src="nina-config.js" defer></script>
 <script src="nina.js" defer></script>
 
 </body>
