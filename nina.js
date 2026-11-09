@@ -60,7 +60,8 @@
     upset:"frustrated", unhappy:"frustrated", solved:"solve",
     solving:"solve", encountered:"seen", encounter:"seen",
     unfamiliar:"unknown", unknown:"unknown", new:"unknown",
-    respond:"response", criticism:"feedback", like:"style"
+    respond:"response", criticism:"feedback", like:"style",
+    suits:"fit", suitable:"fit", fits:"fit", tickets:"ticket", many:"multiple"
   };
 
   function tokenize(value) {
@@ -114,7 +115,7 @@
     }).sort((a, b) => b.score - a.score);
     const first = scores[0], runnerUp = scores[1];
     // Reject unsupported or ambiguous input rather than picking an unrelated answer.
-    if (!first || first.score < 3 || (first.score < 5 && runnerUp && first.score - runnerUp.score < 0.5)) return null;
+    if (!first || first.score < 4 || (first.score < 5 && runnerUp && first.score - runnerUp.score < 0.5)) return null;
     return first.topic;
   }
   function ask(question) {
