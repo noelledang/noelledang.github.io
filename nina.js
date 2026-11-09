@@ -131,7 +131,7 @@
     input.value = "";
     ask(q);
   });
-  fetch("portfolio-knowledge.json")
+  fetch("portfolio-knowledge.json?v=20261108-2", { cache: "no-store" })
     .then((response) => { if (!response.ok) throw new Error("Unable to load portfolio data"); return response.json(); })
     .then((data) => {
       topics = Array.isArray(data.topics) ? data.topics : [];
