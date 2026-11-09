@@ -118,11 +118,34 @@
     if (!first || first.score < 4 || (first.score < 5 && runnerUp && first.score - runnerUp.score < 0.5)) return null;
     return first.topic;
   }
+  let awaitingTraitExamples = false;
   function ask(question) {
     bubble(question, "visitor");
+    const reply = question.toLowerCase().replace(/[^a-z ]/g, " ").replace(/\\s+/g, " ").trim();
+    if (awaitingTraitExamples) {
+      const confirmed = /^(yes|yes please|yeah|yep|sure|sure please|of course|please|absolutely|definitely|go ahead|tell me more|show me examples|give me examples|examples please|i would|i d love that)$/.test(reply)
+        || /^(can you |could you |please )?(give|show|share|provide|tell)( me)?( some| a few)? examples/.test(reply);
+      const declined = /^(no|no thanks|no thank you|not now|nope|nah)$/.test(reply);
+      if (confirmed) {
+        awaitingTraitExamples = false;
+        const traits = topics.find(topic => topic.id === "three-words");
+        if (traits && traits.examplesAnswer) bubble(traits.examplesAnswer, "bot", "#experience", "See her experience");
+        return;
+      }
+      if (declined) {
+        awaitingTraitExamples = false;
+        bubble("Of course! Feel free to ask about Noelle's experience, projects, or technical skills.", "bot");
+        return;
+      }
+      awaitingTraitExamples = false;
+    }
     const found = matchTopic(question);
-    if (found) bubble(found.answer, "bot", found.link, found.linkLabel);
-    else bubble("I don't have a verified answer for that in Noelle's portfolio yet. Please explore the case studies or reach out to Noelle directly.", "bot", "mailto:Dang.Noelle@gmail.com", "Email Noelle");
+    if (found) {
+      bubble(found.answer, "bot", found.link, found.linkLabel);
+      awaitingTraitExamples = found.id === "three-words" && !!found.examplesAnswer;
+    } else {
+      bubble("I don't have a verified answer for that in Noelle's portfolio yet. Please explore the case studies or reach out to Noelle directly.", "bot", "mailto:Dang.Noelle@gmail.com", "Email Noelle");
+    }
   }
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -131,7 +154,7 @@
     input.value = "";
     ask(q);
   });
-  fetch("portfolio-knowledge.json?v=20261108-2", { cache: "no-store" })
+  fetch("portfolio-knowledge.json?v=20261108-3", { cache: "no-store" })
     .then((response) => { if (!response.ok) throw new Error("Unable to load portfolio data"); return response.json(); })
     .then((data) => {
       topics = Array.isArray(data.topics) ? data.topics : [];
