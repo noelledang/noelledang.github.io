@@ -1,0 +1,172 @@
+{
+  "name": "Nina",
+  "version": 1,
+  "notice": "Nina is a guided portfolio assistant. Answers are curated from Noelle's public portfolio; generative AI is not connected yet.",
+  "topics": [
+    {
+      "id": "overview",
+      "title": "Who is Noelle?",
+      "keywords": [
+        "about",
+        "who",
+        "background",
+        "experience",
+        "introduce",
+        "summary",
+        "noelle",
+        "hire",
+        "why"
+      ],
+      "answer": "Noelle is a Technical and Product Support professional with 4+ years of B2B SaaS experience across marketing technology, digital banking, and HR platforms. She investigates product issues, communicates clear next steps, and looks for repeatable improvements to the customer experience.",
+      "link": "#experience",
+      "linkLabel": "Explore work experience"
+    },
+    {
+      "id": "tools",
+      "title": "What technical tools does she use?",
+      "keywords": [
+        "tools",
+        "stack",
+        "skill",
+        "technical",
+        "sql",
+        "mysql",
+        "microsoft sql",
+        "jira",
+        "salesforce",
+        "intercom",
+        "browserstack",
+        "logs",
+        "devtools",
+        "sso",
+        "saml"
+      ],
+      "answer": "Her technical support toolkit includes SQL, API diagnostics, Chrome DevTools, application logs, SSO/SAML, and BrowserStack. She has used Salesforce, Intercom, Jira, and Confluence for customer support, tracking, and documentation. Through independent projects she has also worked with HTML, Next.js, React, TypeScript, GitHub, and Vercel.",
+      "link": "#skills",
+      "linkLabel": "See technical skills"
+    },
+    {
+      "id": "api",
+      "title": "How does she troubleshoot APIs and integrations?",
+      "keywords": [
+        "api",
+        "webhook",
+        "integration",
+        "shopify",
+        "order",
+        "sync",
+        "connectivity",
+        "diagnostic"
+      ],
+      "answer": "In a Shopify-to-referral-platform issue, Noelle compared SQL reports and historical order activity to determine when incoming order confirmations stopped. She documented the evidence for Engineering, kept the customer updated, and proposed manual referral credits as an interim workaround. She did not independently deploy an integration fix.",
+      "link": "#case-studies",
+      "linkLabel": "Read the Shopify case study"
+    },
+    {
+      "id": "rdc",
+      "title": "What was the RDC troubleshooting case?",
+      "keywords": [
+        "rdc",
+        "remote deposit",
+        "manual review",
+        "deposit",
+        "queue",
+        "pod",
+        "banking"
+      ],
+      "answer": "When approximately 98% of remote deposit submissions began entering manual review, Noelle compared affected customers and identified a shared application-pod pattern. She investigated settings and escalated the evidence for a more targeted engineering review.",
+      "link": "#case-studies",
+      "linkLabel": "Read the RDC case study"
+    },
+    {
+      "id": "cloudflare",
+      "title": "What happened in the Cloudflare investigation?",
+      "keywords": [
+        "cloudflare",
+        "waf",
+        "401",
+        "authentication",
+        "headers",
+        "firewall",
+        "security"
+      ],
+      "answer": "While investigating Remote Deposit Capture authentication failures, Noelle verified DNS and IP allowlisting and used connectivity tests to identify missing authentication headers. The issue was traced to a Cloudflare WAF rule that stripped credentials; adjusting the rule restored service.",
+      "link": "#case-studies",
+      "linkLabel": "Read the Cloudflare case study"
+    },
+    {
+      "id": "sql",
+      "title": "How does she use SQL?",
+      "keywords": [
+        "sql",
+        "query",
+        "joins",
+        "subqueries",
+        "database",
+        "data",
+        "benefits",
+        "discrepancies",
+        "sequoia"
+      ],
+      "answer": "At Sequoia, Noelle taught herself SQL and used joins and subqueries to investigate benefits-enrollment data, reporting discrepancies, and access issues. She uses data evidence to narrow down problems before escalation.",
+      "link": "#self-learning",
+      "linkLabel": "See self-learning projects"
+    },
+    {
+      "id": "impact",
+      "title": "What measurable impact has she made?",
+      "keywords": [
+        "impact",
+        "metrics",
+        "results",
+        "performance",
+        "sla",
+        "cases",
+        "csat",
+        "customer satisfaction",
+        "knowledge",
+        "improve"
+      ],
+      "answer": "At Extole, Noelle maintained 98% SLA compliance across more than 150 monthly B2B SaaS cases and achieved a 24-hour median Tier 1 resolution time. She also wrote 10+ knowledge-base articles and contributed to efforts to reduce recurring support volume.",
+      "link": "#experience",
+      "linkLabel": "See career highlights"
+    },
+    {
+      "id": "projects",
+      "title": "What has she built?",
+      "keywords": [
+        "build",
+        "built",
+        "project",
+        "website",
+        "coding",
+        "ai",
+        "automation",
+        "wedding",
+        "portfolio",
+        "react",
+        "typescript",
+        "vercel"
+      ],
+      "answer": "Noelle built a bilingual wedding website with Next.js, React, and TypeScript and troubleshot its RSVP workflow with Google Apps Script and Google Sheets. She also developed this HTML/CSS portfolio and has used AI-assisted coding while learning web development.",
+      "link": "#projects",
+      "linkLabel": "Explore projects"
+    },
+    {
+      "id": "contact",
+      "title": "How can I contact her?",
+      "keywords": [
+        "contact",
+        "email",
+        "reach",
+        "interview",
+        "recruiter",
+        "opportunity",
+        "hire"
+      ],
+      "answer": "Noelle is based in Gilbert, Arizona and is open to remote U.S. Technical Support and Product Support opportunities. You can contact her directly by email using the link below.",
+      "link": "mailto:Dang.Noelle@gmail.com",
+      "linkLabel": "Email Noelle"
+    }
+  ]
+}
