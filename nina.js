@@ -34,23 +34,89 @@
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !panel.hidden) toggle(false);
   });
-  function normalize(value) {
-    return String(value).toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+  // Lightweight, local-language matching: synonyms + weighted topic similarity.
+  // No AI model, data collection, third-party services, or API charges.
+  const stopWords = new Set("a an the is are was were do does did can could would should i we you she her hers he his noelle tell me about of for to in on at by with and or from some show what when where why how which who that this has have had my your their they it its be been being as after before into more".split(" "));
+  const aliases = {
+    grasp:"learn", grasping:"learn", grasped:"learn", understand:"learn",
+    understanding:"learn", absorb:"learn", absorbing:"learn", learner:"learn",
+    learning:"learn", learns:"learn", learned:"learn", quick:"fast",
+    quickly:"fast", rapidly:"fast", rapid:"fast",
+    material:"information", materials:"information", concepts:"information",
+    concept:"information", websites:"website", projects:"project",
+    built:"build", building:"build", developed:"build", development:"build",
+    working:"work", works:"work", teams:"team", customers:"customer",
+    clients:"customer", issues:"issue", problems:"problem", cases:"case",
+    prioritize:"priority", prioritizing:"priority", prioritization:"priority",
+    troubleshooting:"troubleshoot", investigating:"investigate",
+    investigated:"investigate", investigation:"investigate",
+    collaboration:"collaborate", collaborating:"collaborate",
+    motivated:"motivation", motivates:"motivation",
+    adaptability:"adapt", adapting:"adapt", escalating:"escalate",
+    escalation:"escalate", results:"result", achievements:"achievement",
+    hire:"choose", hiring:"choose", chosen:"choose", choosing:"choose",
+    best:"strong", improvements:"improve", tricky:"difficult",
+    tough:"difficult", hard:"difficult", angry:"frustrated",
+    upset:"frustrated", unhappy:"frustrated", solved:"solve",
+    solving:"solve", encountered:"seen", encounter:"seen",
+    unfamiliar:"unknown", unknown:"unknown", new:"unknown",
+    respond:"response", criticism:"feedback", like:"style",
+    suits:"fit", suitable:"fit", fits:"fit", tickets:"ticket", many:"multiple"
+  };
+
+  function tokenize(value) {
+    return String(value).toLowerCase()
+      .replace(/([a-z])'s\b/g, "$1")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim().split(/\s+/).filter(Boolean)
+      .map(word => aliases[word] || word)
+      .filter(word => !stopWords.has(word));
+  }
+
+  let index = [];
+  let documentFrequency = new Map();
+  function indexTopics() {
+    index = topics.map(topic => ({
+      topic,
+      phrases: [topic.title, ...topic.keywords].map(tokenize).filter(tokens => tokens.length > 0)
+    }));
+    documentFrequency = new Map();
+    for (const item of index) {
+      const distinct = new Set(item.phrases.flat());
+      for (const token of distinct) {
+        documentFrequency.set(token, (documentFrequency.get(token) || 0) + 1);
+      }
+    }
+  }
+  function tokenWeight(token) {
+    return 1 + Math.log(1 + topics.length / (documentFrequency.get(token) || 1));
   }
   function matchTopic(question) {
-    const q = normalize(question);
-    const words = new Set(q.split(" ").filter(Boolean));
-    const scores = topics.map((topic) => {
-      let score = 0;
-      for (const keyword of topic.keywords) {
-        const term = normalize(keyword);
-        if (term.includes(" ") ? q.includes(term) : words.has(term)) score += term.includes(" ") ? 4 : 2;
+    const queryTokens = tokenize(question);
+    if (!queryTokens.length) return null;
+    const querySet = new Set(queryTokens);
+    const totalQueryWeight = [...querySet].reduce((sum, t) => sum + tokenWeight(t), 0);
+    const scores = index.map(({topic, phrases}) => {
+      let best = 0;
+      for (const phrase of phrases) {
+        const termSet = new Set(phrase);
+        const matches = [...termSet].filter(t => querySet.has(t));
+        if (!matches.length) continue;
+        const matchedWeight = matches.reduce((sum, t) => sum + tokenWeight(t), 0);
+        const totalPhraseWeight = [...termSet].reduce((sum, t) => sum + tokenWeight(t), 0);
+        const precision = matchedWeight / totalPhraseWeight;
+        const coverage = matchedWeight / totalQueryWeight;
+        let score = 7 * precision * coverage + 2 * matches.length;
+        if (matches.length === termSet.size && termSet.size >= 2) score += 5 + termSet.size;
+        if (termSet.size === 1) score += Math.min(2, tokenWeight(matches[0]) / 2);
+        best = Math.max(best, score);
       }
-      if (normalize(topic.title) === q) score += 20;
-      return { topic, score };
-    });
-    scores.sort((a,b)=>b.score-a.score);
-    return scores[0] && scores[0].score >= 2 ? scores[0].topic : null;
+      return { topic, score: best };
+    }).sort((a, b) => b.score - a.score);
+    const first = scores[0], runnerUp = scores[1];
+    // Reject unsupported or ambiguous input rather than picking an unrelated answer.
+    if (!first || first.score < 4 || (first.score < 5 && runnerUp && first.score - runnerUp.score < 0.5)) return null;
+    return first.topic;
   }
   function ask(question) {
     bubble(question, "visitor");
@@ -69,6 +135,7 @@
     .then((response) => { if (!response.ok) throw new Error("Unable to load portfolio data"); return response.json(); })
     .then((data) => {
       topics = Array.isArray(data.topics) ? data.topics : [];
+      indexTopics();
       bubble("Hi! I'm Nina, Noelle's portfolio guide. Ask about her technical support experience, tools, projects, or troubleshooting case studies.", "bot");
       ["Why should we hire Noelle?","How does Noelle approach unfamiliar technical issues?","Show me some of Noelle's projects.","What could Noelle contribute in her first 90 days?"].forEach((question) => {
         const button = document.createElement("button");
