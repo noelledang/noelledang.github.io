@@ -168,6 +168,9 @@
         button.addEventListener("click", () => ask(question));
         prompts.appendChild(button);
       });
+      // Show Nina and all suggested questions on initial page load without stealing focus.
+      panel.hidden = false;
+      launch.setAttribute("aria-expanded", "true");
     })
     .catch(() => {
       bubble("The portfolio guide is temporarily unavailable. You can still contact Noelle directly.", "bot", "mailto:Dang.Noelle@gmail.com", "Email Noelle");
