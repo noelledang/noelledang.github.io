@@ -99,7 +99,23 @@
   function tokenWeight(token) {
     return 1 + Math.log(1 + topics.length / (documentFrequency.get(token) || 1));
   }
+  // Match a complete, curated question first, before stop-word filtering.
+  // This handles questions like "Tell me about Noelle" where every word
+  // would otherwise be removed by the tokenizer.
+  function normalizeQuestion(value) {
+    return String(value).toLowerCase()
+      .replace(/([a-z])'s\\b/g, "$1")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim().replace(/\\s+/g, " ");
+  }
   function matchTopic(question) {
+    const normalized = normalizeQuestion(question)
+      .replace(/^(?:please |can you |could you |would you )+/, "");
+    const exactMatches = topics.filter(topic =>
+      [topic.title, ...topic.keywords].some(phrase => normalizeQuestion(phrase) === normalized)
+    );
+    // Do not guess if multiple topics share the exact same phrase.
+    if (exactMatches.length === 1) return exactMatches[0];
     const queryTokens = tokenize(question);
     if (!queryTokens.length) return null;
     const querySet = new Set(queryTokens);
