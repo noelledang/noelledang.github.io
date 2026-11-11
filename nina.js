@@ -10,6 +10,8 @@
   const input = document.getElementById("nina-input");
   if (!launch || !panel || !close || !log || !prompts || !form || !input) return;
   let topics = [];
+  const initialLoadTime = performance.now();
+  let chatInteractedWith = false;
   function bubble(message, type, link, label) {
     const entry = document.createElement("p");
     entry.className = "nina-bubble " + type;
@@ -29,8 +31,14 @@
     if (open) input.focus();
     else launch.focus();
   }
-  launch.addEventListener("click", () => toggle(panel.hidden));
-  close.addEventListener("click", () => toggle(false));
+  launch.addEventListener("click", () => {
+    chatInteractedWith = true;
+    toggle(panel.hidden);
+  });
+  close.addEventListener("click", () => {
+    chatInteractedWith = true;
+    toggle(false);
+  });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !panel.hidden) toggle(false);
   });
@@ -168,7 +176,8 @@
         button.addEventListener("click", () => ask(question));
         prompts.appendChild(button);
       });
-      // Auto-open once per browser tab session. Do not steal keyboard focus.
+      // Wait until 3 seconds after the page script starts, once per browser tab session.
+      // Don't interrupt visitors who already opened or dismissed Nina manually.
       let alreadyOpened = false;
       try {
         alreadyOpened = sessionStorage.getItem("ninaAutoOpened") === "true";
@@ -176,13 +185,18 @@
         // Storage may be disabled. Keep Nina usable without it.
       }
       if (!alreadyOpened) {
-        panel.hidden = false;
-        launch.setAttribute("aria-expanded", "true");
-        try {
-          sessionStorage.setItem("ninaAutoOpened", "true");
-        } catch (error) {
-          // Ignore storage failures.
-        }
+        const remainingDelay = Math.max(0, 3000 - (performance.now() - initialLoadTime));
+        setTimeout(() => {
+          if (chatInteractedWith || !panel.hidden || document.hidden) return;
+          panel.hidden = false;
+          launch.setAttribute("aria-expanded", "true");
+          // Do not steal keyboard focus when showing Nina automatically.
+          try {
+            sessionStorage.setItem("ninaAutoOpened", "true");
+          } catch (error) {
+            // Ignore storage failures.
+          }
+        }, remainingDelay);
       }
     })
     .catch(() => {
