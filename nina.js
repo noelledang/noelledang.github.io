@@ -168,9 +168,22 @@
         button.addEventListener("click", () => ask(question));
         prompts.appendChild(button);
       });
-      // Show Nina and all suggested questions on initial page load without stealing focus.
-      panel.hidden = false;
-      launch.setAttribute("aria-expanded", "true");
+      // Auto-open once per browser tab session. Do not steal keyboard focus.
+      let alreadyOpened = false;
+      try {
+        alreadyOpened = sessionStorage.getItem("ninaAutoOpened") === "true";
+      } catch (error) {
+        // Storage may be disabled. Keep Nina usable without it.
+      }
+      if (!alreadyOpened) {
+        panel.hidden = false;
+        launch.setAttribute("aria-expanded", "true");
+        try {
+          sessionStorage.setItem("ninaAutoOpened", "true");
+        } catch (error) {
+          // Ignore storage failures.
+        }
+      }
     })
     .catch(() => {
       bubble("The portfolio guide is temporarily unavailable. You can still contact Noelle directly.", "bot", "mailto:Dang.Noelle@gmail.com", "Email Noelle");
