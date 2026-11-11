@@ -21,7 +21,27 @@
 .nina-note{font-size:10px;color:var(--muted);padding:0 16px 12px;margin:0}
 @media(max-width:480px){.nina-launch{right:16px;bottom:16px}.nina-panel{right:16px;bottom:76px;max-height:calc(100dvh - 104px)}}
 
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style></head><body><a class="skip" href="#main">Skip to content</a><header><nav class="wrap" aria-label="Main navigation"><a class="brand" href="/">Noelle Dang<span style="color:var(--rose)">.</span></a><div class="navlinks"><a href="#experience">Experience</a><a href="#case-studies">Case Studies</a><a href="#projects">Projects</a><a href="#about">About</a><a href="resume.html">Resume ↗</a></div></nav></header><main id="main"><div class="wrap"><div class="hero"><div>
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* Subtle rose-gold highlight for Nina's launcher. */
+.nina-launch {
+  border-color: #d7a4b7;
+  box-shadow: 0 8px 25px #29242130,
+    0 0 0 1px rgba(255,255,255,.14) inset,
+    0 0 18px rgba(215,164,183,.28);
+  transition: transform .2s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.nina-launch:hover {
+  transform: translateY(-1px);
+  border-color: #f0cada;
+  box-shadow: 0 12px 30px #29242136,
+    0 0 0 1px rgba(255,255,255,.18) inset,
+    0 0 24px rgba(240,202,218,.45);
+}
+.nina-launch:active { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .nina-launch { transition: none; }
+}
+</style></head><body><a class="skip" href="#main">Skip to content</a><header><nav class="wrap" aria-label="Main navigation"><a class="brand" href="/">Noelle Dang<span style="color:var(--rose)">.</span></a><div class="navlinks"><a href="#experience">Experience</a><a href="#case-studies">Case Studies</a><a href="#projects">Projects</a><a href="#about">About</a><a href="resume.html">Resume ↗</a></div></nav></header><main id="main"><div class="wrap"><div class="hero"><div>
 
   <!-- INTRODUCTION -->
   <div class="eyebrow">Technical support · Product support</div>
@@ -573,7 +593,7 @@
   <form class="nina-form" id="nina-form"><label class="sr-only" for="nina-input">Ask Nina about Noelle's experience</label><input class="nina-input" id="nina-input" type="text" maxlength="250" placeholder="Ask about skills, projects, cases..." autocomplete="off" required><button class="nina-send" type="submit">Ask</button></form>
   <p class="nina-note">Curated portfolio answers, not generative AI. No questions are stored. For other details, contact Noelle.</p>
 </aside>
-<script src="nina.js?v=20261111-auto-open-1" defer></script>
+<script src="nina.js?v=20261111-session-glow-1" defer></script>
 
 </body>
 </html>
