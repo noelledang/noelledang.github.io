@@ -104,9 +104,9 @@
   // would otherwise be removed by the tokenizer.
   function normalizeQuestion(value) {
     return String(value).toLowerCase()
-      .replace(/([a-z])'s\\b/g, "$1")
+      .replace(/([a-z])'s\b/g, "$1")
       .replace(/[^a-z0-9]+/g, " ")
-      .trim().replace(/\\s+/g, " ");
+      .trim().replace(/\s+/g, " ");
   }
   function matchTopic(question) {
     const normalized = normalizeQuestion(question)
