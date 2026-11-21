@@ -157,65 +157,72 @@
     });
     return isAmbiguous ? (clarificationConfig.intents || []) : [];
   }
+  let awaitingTraitExamples = false;
+  let awaitingRephrase = false;
+  let rephraseAttempts = 0;
+  const MAX_REPHRASES = 2;
   function showClarification(question, intents) {
     const panel = document.createElement("div");
     panel.className = "nina-clarification";
     const prompt = document.createElement("p");
     prompt.textContent = "I can take that a few ways. What would you like to know?";
-    const label = document.createElement("label");
-    label.textContent = "Choose what you mean";
-    const select = document.createElement("select");
-    select.className = "nina-clarification-select";
-    select.setAttribute("aria-label", "Choose what you want to know about Noelle");
-    const placeholder = document.createElement("option");
-    placeholder.value = "";
-    placeholder.textContent = "Select an option...";
-    placeholder.disabled = true;
-    placeholder.selected = true;
-    select.appendChild(placeholder);
+    const choices = document.createElement("div");
+    choices.className = "nina-clarification-grid";
+    choices.setAttribute("role", "group");
+    choices.setAttribute("aria-label", "Choose what you want to know about Noelle");
     intents.forEach(intent => {
-      const option = document.createElement("option");
-      option.value = intent.id;
-      option.textContent = intent.label;
-      select.appendChild(option);
-    });
-    const actions = document.createElement("div");
-    actions.className = "nina-clarification-actions";
-    const confirm = document.createElement("button");
-    confirm.type = "button";
-    confirm.className = "nina-clarification-confirm";
-    confirm.textContent = "Confirm";
-    confirm.disabled = true;
-    select.addEventListener("change", () => { confirm.disabled = !select.value; });
-    confirm.addEventListener("click", () => {
-      const intent = intents.find(item => item.id === select.value);
-      const topic = intent && topics.find(item => item.id === intent.topicId);
-      if (!topic) {
+      const choice = document.createElement("button");
+      choice.type = "button";
+      choice.className = "nina-clarification-choice";
+      choice.textContent = intent.label;
+      choice.addEventListener("click", () => {
+        const topic = topics.find(item => item.id === intent.topicId);
         panel.remove();
-        bubble("I couldn't match that selection to a verified answer. Please rephrase your question.", "bot");
-        input.focus();
-        return;
-      }
-      panel.remove();
-      bubble(topic.answer, "bot", topic.link, topic.linkLabel);
-      awaitingTraitExamples = topic.id === "three-words" && !!topic.examplesAnswer;
+        if (!topic) {
+          askForRephrase();
+          return;
+        }
+        awaitingRephrase = false;
+        rephraseAttempts = 0;
+        bubble(topic.answer, "bot", topic.link, topic.linkLabel);
+        awaitingTraitExamples = topic.id === "three-words" && !!topic.examplesAnswer;
+      });
+      choices.appendChild(choice);
     });
     const rephrase = document.createElement("button");
     rephrase.type = "button";
     rephrase.className = "nina-clarification-rephrase";
-    rephrase.textContent = "None of these — rephrase";
+    rephrase.textContent = "None of these — let me rephrase";
     rephrase.addEventListener("click", () => {
       panel.remove();
-      bubble("No problem! Try rephrasing your question, and I'll narrow it down.", "bot");
-      input.focus();
+      askForRephrase();
     });
-    actions.append(confirm, rephrase);
-    panel.append(prompt, label, select, actions);
+    panel.append(prompt, choices, rephrase);
     log.appendChild(panel);
     log.scrollTop = log.scrollHeight;
   }
-  let awaitingTraitExamples = false;
+  function askForRephrase() {
+    awaitingRephrase = true;
+    bubble("No problem! Could you rephrase that or give me a little more context? You have up to two tries.", "bot");
+    input.focus();
+  }
+  function showFallback(question) {
+    if (NINA_COLLECT_ENDPOINT.startsWith("https://script.google.com/macros/s/")) {
+      fetch(NINA_COLLECT_ENDPOINT, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ question })
+      }).catch(() => {});
+    }
+    bubble("I'm sorry, but I'm having trouble understanding that question. I don't want to give you an inaccurate answer. Feel free to explore the suggested questions or reach out to Noelle directly if you'd like to know more!", "bot", "mailto:Dang.Noelle@gmail.com", "Email Noelle");
+    awaitingRephrase = false;
+    rephraseAttempts = 0;
+  }
   function ask(question) {
+    const isRephrase = awaitingRephrase;
+    if (isRephrase) rephraseAttempts += 1;
+    else rephraseAttempts = 0;
+    awaitingRephrase = false;
     clearClarification();
     bubble(question, "visitor");
     const clarificationOptions = findClarification(question);
@@ -230,12 +237,14 @@
       const declined = /^(no|no thanks|no thank you|not now|nope|nah)$/.test(reply);
       if (confirmed) {
         awaitingTraitExamples = false;
+        rephraseAttempts = 0;
         const traits = topics.find(topic => topic.id === "three-words");
         if (traits && traits.examplesAnswer) bubble(traits.examplesAnswer, "bot", "#experience", "See her experience");
         return;
       }
       if (declined) {
         awaitingTraitExamples = false;
+        rephraseAttempts = 0;
         bubble("Of course! Feel free to ask about Noelle's experience, projects, or technical skills.", "bot");
         return;
       }
@@ -243,18 +252,13 @@
     }
     const found = matchTopic(question);
     if (found) {
+      rephraseAttempts = 0;
       bubble(found.answer, "bot", found.link, found.linkLabel);
       awaitingTraitExamples = found.id === "three-words" && !!found.examplesAnswer;
+    } else if (isRephrase && rephraseAttempts >= MAX_REPHRASES) {
+      showFallback(question);
     } else {
-      // Log only unanswered questions. Collection is disabled until the endpoint is configured.
-      if (NINA_COLLECT_ENDPOINT.startsWith("https://script.google.com/macros/s/")) {
-        fetch(NINA_COLLECT_ENDPOINT, {
-          method: "POST", mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ question })
-        }).catch(() => {});
-      }
-      bubble("I don't have a verified answer for that in Noelle's portfolio yet. Please explore the case studies or reach out to Noelle directly.", "bot", "mailto:Dang.Noelle@gmail.com", "Email Noelle");
+      askForRephrase();
     }
   }
   form.addEventListener("submit", (event) => {
