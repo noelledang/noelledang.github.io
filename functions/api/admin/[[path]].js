@@ -5,7 +5,7 @@ async function verifyAccess(request,env){
     const parts=token.split(".");if(parts.length!==3)return false;
     const decode=s=>JSON.parse(atob(s.replace(/-/g,"+").replace(/_/g,"/")));
     const header=decode(parts[0]),payload=decode(parts[1]);
-    const domain=env.ACCESS_TEAM_DOMAIN.replace(/^https?:\\/\\//,"").replace(/\\/$/,"");
+    let domain=String(env.ACCESS_TEAM_DOMAIN).replace("https://","").replace("http://","");while(domain.endsWith("/"))domain=domain.slice(0,-1);
     const issuer="https://"+domain;
     if(header.alg!=="RS256"||!header.kid||payload.iss!==issuer||!Array.isArray(payload.aud)||!payload.aud.includes(env.ACCESS_AUD)||!payload.exp||payload.exp<=Date.now()/1000)return false;
     const response=await fetch(issuer+"/cdn-cgi/access/certs");if(!response.ok)return false;
