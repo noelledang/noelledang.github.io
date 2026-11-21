@@ -46,14 +46,12 @@
 
 .nina-clarification{margin:0 16px 12px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px}
 .nina-clarification p{margin:0 0 10px;color:var(--ink);font:13px/1.45 Arial,sans-serif}
-.nina-clarification label{display:block;margin-bottom:6px;color:var(--muted);font:11px/1.4 Arial,sans-serif}
-.nina-clarification-select{width:100%;min-height:40px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--ink);font:12px Arial,sans-serif}
-.nina-clarification-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
-.nina-clarification-confirm,.nina-clarification-rephrase{min-height:34px;border-radius:7px;padding:7px 11px;cursor:pointer;font:600 11px Arial,sans-serif}
-.nina-clarification-confirm{border:1px solid var(--rose);background:var(--rose);color:white}
-.nina-clarification-confirm:disabled{opacity:.45;cursor:not-allowed}
-.nina-clarification-rephrase{border:1px solid var(--line);background:transparent;color:var(--rose)}
-.nina-clarification-select:focus-visible,.nina-clarification-confirm:focus-visible,.nina-clarification-rephrase:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.nina-clarification-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:0 0 9px}
+.nina-clarification-choice{min-height:44px;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);text-align:left;cursor:pointer;font:600 11px/1.35 Arial,sans-serif;transition:background .15s,border-color .15s}
+.nina-clarification-choice:hover{background:#fbf3f5;border-color:var(--rose)}
+.nina-clarification-rephrase{display:block;padding:5px 0;border:0;background:transparent;color:var(--rose);text-align:left;cursor:pointer;font:600 11px Arial,sans-serif}
+.nina-clarification-choice:focus-visible,.nina-clarification-rephrase:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+@media(max-width:380px){.nina-clarification{margin-left:10px;margin-right:10px;padding:10px}.nina-clarification-grid{gap:6px}.nina-clarification-choice{padding:7px;font-size:10px}}
 </style></head><body><a class="skip" href="#main">Skip to content</a><header><nav class="wrap" aria-label="Main navigation"><a class="brand" href="/">Noelle Dang<span style="color:var(--rose)">.</span></a><div class="navlinks"><a href="#experience">Experience</a><a href="#case-studies">Case Studies</a><a href="#projects">Projects</a><a href="#about">About</a><a href="resume.html">Resume ↗</a></div></nav></header><main id="main"><div class="wrap"><div class="hero"><div>
 
   <!-- INTRODUCTION -->
@@ -606,7 +604,7 @@
   <form class="nina-form" id="nina-form"><label class="sr-only" for="nina-input">Ask Nina about Noelle's experience</label><input class="nina-input" id="nina-input" type="text" maxlength="250" placeholder="Ask about skills, projects, cases..." autocomplete="off" required><button class="nina-send" type="submit">Ask</button></form>
   <p class="nina-note">Curated portfolio answers, not generative AI. No questions are stored. For other details, contact Noelle.</p>
 </aside>
-<script src="nina.js?v=20261121-clarification-1" defer></script>
+<script src="nina.js?v=20261121-clarification-2" defer></script>
 
 </body>
 </html>
