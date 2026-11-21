@@ -1,44 +1,21 @@
-// Nina Analytics — PRIVATE DASHBOARD
-// Deploy as Web App: Execute as ME; Who has access: ONLY MYSELF.
+// Nina Product Intelligence — private Apps Script dashboard backend.
+// Sheet columns: id, question/title, normalized, category, priority, status, occurrences,
+// first_seen, last_seen, notes/description, type, parent_id, archived, created_at.
 const SPREADSHEET_ID = "PASTE_YOUR_GOOGLE_SHEET_ID_HERE";
 const QUESTIONS_TAB = "Questions";
 const EVENTS_TAB = "Events";
-function doGet() {
-  return HtmlService.createTemplateFromFile("Dashboard").evaluate()
-    .setTitle("Nina · Product Intelligence")
-    .addMetaTag("viewport", "width=device-width, initial-scale=1");
-}
-function include(filename) { return HtmlService.createHtmlOutputFromFile(filename).getContent(); }
-function getDashboardData() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(QUESTIONS_TAB);
-  const values = sheet && sheet.getLastRow() > 1 ? sheet.getRange(2,1,sheet.getLastRow()-1,10).getValues() : [];
-  const questions = values.map(r => ({id:String(r[0]),question:String(r[1]),category:String(r[3]||"Uncategorized"),priority:String(r[4]||"Medium"),status:String(r[5]||"New"),occurrences:Number(r[6]||0),first_seen:toIso_(r[7]),last_seen:toIso_(r[8]),notes:String(r[9]||"")})).sort((a,b)=>new Date(b.last_seen)-new Date(a.last_seen));
-  const totalGroups=questions.length, totalEvents=questions.reduce((n,q)=>n+q.occurrences,0);
-  const recurring=questions.filter(q=>q.occurrences>1).length, resolved=questions.filter(q=>q.status==="Resolved").length;
-  const open=questions.filter(q=>!["Resolved","Won't fix"].includes(q.status)).length;
-  const week=Date.now()-7*86400000;
-  const newThisWeek=questions.filter(q=>new Date(q.first_seen).getTime()>=week).length;
-  return {questions,summary:{totalGroups,totalEvents,open,unanswered:totalEvents,resolved,recurring,newThisWeek,repeatRate:totalGroups?Math.round(recurring/totalGroups*100):0,resolutionRate:totalGroups?Math.round(resolved/totalGroups*100):0}};
-}
-function getQuestionEvents(id) {
-  const ss=SpreadsheetApp.openById(SPREADSHEET_ID), sheet=ss.getSheetByName(EVENTS_TAB);
-  if (!sheet || sheet.getLastRow()<2) return [];
-  const rows=sheet.getRange(2,1,sheet.getLastRow()-1,4).getValues();
-  return rows.filter(r=>String(r[1])===String(id)).slice(-30).reverse().map(r=>({question:String(r[2]),created_at:toIso_(r[3])}));
-}
-function updateQuestion(payload) {
-  const ss=SpreadsheetApp.openById(SPREADSHEET_ID), sheet=ss.getSheetByName(QUESTIONS_TAB);
-  if (!sheet || sheet.getLastRow()<2) throw new Error("Question not found");
-  const rows=sheet.getRange(2,1,sheet.getLastRow()-1,10).getValues();
-  const index=rows.findIndex(r=>String(r[0])===String(payload.id));
-  if(index<0) throw new Error("Question not found");
-  const statuses=["New","Investigating","In progress","Resolved","Won't fix"], priorities=["Low","Medium","High"];
-  const row=index+2;
-  sheet.getRange(row,4).setValue(String(payload.category||"Uncategorized").slice(0,100));
-  sheet.getRange(row,5).setValue(priorities.includes(payload.priority)?payload.priority:"Medium");
-  sheet.getRange(row,6).setValue(statuses.includes(payload.status)?payload.status:"New");
-  sheet.getRange(row,10).setValue(String(payload.notes||"").slice(0,5000));
-  return {ok:true};
-}
-function toIso_(value) { const d=value instanceof Date?value:new Date(value); return isNaN(d.getTime())?"":d.toISOString(); }
+const HEADERS = ["id","question","normalized","category","priority","status","occurrences","first_seen","last_seen","notes","type","parent_id","archived","created_at"];
+function doGet(){return HtmlService.createTemplateFromFile("Dashboard").evaluate().setTitle("Nina · Product Intelligence").addMetaTag("viewport","width=device-width, initial-scale=1");}
+function include(name){return HtmlService.createHtmlOutputFromFile(name).getContent();}
+function sheet_(){const s=SpreadsheetApp.openById(SPREADSHEET_ID);let sh=s.getSheetByName(QUESTIONS_TAB);if(!sh)sh=s.insertSheet(QUESTIONS_TAB);if(!sh.getLastRow())sh.appendRow(HEADERS);else if(sh.getLastColumn()<HEADERS.length)sh.getRange(1,sh.getLastColumn()+1,1,HEADERS.length-sh.getLastColumn()).setValues([HEADERS.slice(sh.getLastColumn())]);sh.setFrozenRows(1);return sh;}
+function rows_(){const sh=sheet_();return sh.getLastRow()>1?sh.getRange(2,1,sh.getLastRow()-1,HEADERS.length).getValues():[];}
+function map_(r){return {id:String(r[0]),question:String(r[1]||""),category:String(r[3]||"Uncategorized"),priority:String(r[4]||"Medium"),status:String(r[5]||"New"),occurrences:Number(r[6]||0),first_seen:iso_(r[7]),last_seen:iso_(r[8]),notes:String(r[9]||""),type:String(r[10]||"question"),parent_id:String(r[11]||""),archived:r[12]===true||String(r[12]).toLowerCase()==="true",created_at:iso_(r[13]||r[7])};}
+function getDashboardData(){const all=rows_().map(map_),questions=all.filter(t=>t.type!=="enhancement"&&!t.archived&&!t.parent_id).sort((a,b)=>new Date(b.last_seen)-new Date(a.last_seen)),enhancements=all.filter(t=>t.type==="enhancement"&&!t.archived).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)),archived=all.filter(t=>t.archived).sort((a,b)=>new Date(b.last_seen||b.created_at)-new Date(a.last_seen||a.created_at));const questionRows=all.filter(t=>t.type!=="enhancement"),totalEvents=questionRows.reduce((n,q)=>n+q.occurrences,0),recurring=questionRows.filter(q=>q.occurrences>1).length,week=Date.now()-604800000,newThisWeek=questionRows.filter(q=>new Date(q.first_seen).getTime()>=week).length,open=questions.filter(q=>!["Resolved","Won't fix","Closed"].includes(q.status)).length;return {questions,enhancements,archived,summary:{totalGroups:questionRows.length,totalEvents,open,unanswered:totalEvents,resolved:questionRows.filter(q=>["Resolved","Closed","Done"].includes(q.status)).length,recurring,newThisWeek,archived:archived.length,enhancements:enhancements.length,repeatRate:questionRows.length?Math.round(recurring/questionRows.length*100):0,resolutionRate:questionRows.length?Math.round(questionRows.filter(q=>["Resolved","Closed","Done"].includes(q.status)).length/questionRows.length*100):0}};}
+function getQuestionEvents(id){const sh=SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(EVENTS_TAB);if(!sh||sh.getLastRow()<2)return [];return sh.getRange(2,1,sh.getLastRow()-1,4).getValues().filter(r=>String(r[1])===String(id)).slice(-30).reverse().map(r=>({question:String(r[2]),created_at:iso_(r[3])}));}
+function getLinkedTickets(id){return rows_().map(map_).filter(t=>t.parent_id===String(id)).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));}
+function updateQuestion(p){const sh=sheet_(),data=rows_(),i=data.findIndex(r=>String(r[0])===String(p.id));if(i<0)throw new Error("Ticket not found");const row=i+2,statuses=["New","Investigating","In progress","Resolved","Won't fix","Closed"],priorities=["Low","Medium","High"];sh.getRange(row,4).setValue(String(p.category||"Uncategorized").slice(0,100));sh.getRange(row,5).setValue(priorities.includes(p.priority)?p.priority:"Medium");sh.getRange(row,6).setValue(statuses.includes(p.status)?p.status:"New");sh.getRange(row,10).setValue(String(p.notes||"").slice(0,5000));return {ok:true};}
+function createEnhancement(p){const ids=Array.isArray(p.questionIds)?p.questionIds.map(String):[];if(!ids.length)throw new Error("Select at least one question ticket.");const title=String(p.title||"").trim().slice(0,180);if(!title)throw new Error("Add an enhancement title.");const sh=sheet_(),data=rows_(),id=Utilities.getUuid(),now=new Date(),wanted=new Set(ids),matches=[];data.forEach((r,i)=>{if(wanted.has(String(r[0]))&&String(r[10]||"question")!=="enhancement"&&r[12]!==true&&!r[11])matches.push(i+2);});if(!matches.length)throw new Error("Those tickets are no longer available to group.");sh.appendRow([id,title,"enhancement:"+id,String(p.category||"Enhancement").slice(0,100),["Low","Medium","High"].includes(p.priority)?p.priority:"Medium","Open",matches.length,now,now,String(p.description||"").slice(0,5000),"enhancement","",false,now]);matches.forEach(row=>{sh.getRange(row,6).setValue("Closed");sh.getRange(row,12).setValue(id);sh.getRange(row,13).setValue(true);});return {ok:true,id};}
+function updateEnhancement(p){const sh=sheet_(),data=rows_(),i=data.findIndex(r=>String(r[0])===String(p.id)&&String(r[10])==="enhancement");if(i<0)throw new Error("Enhancement not found");const row=i+2,priorities=["Low","Medium","High"],statuses=["Open","In progress","Blocked","Done"];sh.getRange(row,4).setValue(String(p.category||"Enhancement").slice(0,100));sh.getRange(row,5).setValue(priorities.includes(p.priority)?p.priority:"Medium");sh.getRange(row,6).setValue(statuses.includes(p.status)?p.status:"Open");sh.getRange(row,10).setValue(String(p.notes||"").slice(0,5000));return {ok:true};}
+function archiveTicket(id){const sh=sheet_(),data=rows_(),i=data.findIndex(r=>String(r[0])===String(id));if(i<0)throw new Error("Ticket not found");const row=i+2;sh.getRange(row,6).setValue("Closed");sh.getRange(row,13).setValue(true);return {ok:true};}
+function completeEnhancement(id){const sh=sheet_(),data=rows_(),i=data.findIndex(r=>String(r[0])===String(id)&&String(r[10])==="enhancement");if(i<0)throw new Error("Enhancement not found");const row=i+2;sh.getRange(row,6).setValue("Done");sh.getRange(row,13).setValue(true);data.forEach((r,j)=>{if(String(r[11])===String(id)){sh.getRange(j+2,6).setValue("Closed");sh.getRange(j+2,13).setValue(true);}});return {ok:true};}
+function iso_(v){const d=v instanceof Date?v:new Date(v);return isNaN(d.getTime())?"":d.toISOString();}
