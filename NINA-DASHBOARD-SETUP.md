@@ -16,7 +16,7 @@ This version uses **Google Sheets + Apps Script only**. It does not use Cloudfla
 ## 2. Create the public collector
 1. Visit [script.google.com](https://script.google.com/) and create a project named `Nina Question Collector`.
 2. Replace `Code.gs` with `nina-analytics/collector/Code.gs` from this repository.
-3. Replace `PASTE_YOUR_GOOGLE_SHEET_ID_HERE` with your spreadsheet ID.
+3. The spreadsheet ID has already been configured in this repository's collector code.
 4. Save and run a test after deployment to authorize spreadsheet access.
 5. Select **Deploy → New deployment → Web app**.
 6. Set **Execute as: Me** and **Who has access: Anyone**. This endpoint must accept anonymous portfolio submissions. It has no read or edit methods.
@@ -25,7 +25,7 @@ This version uses **Google Sheets + Apps Script only**. It does not use Cloudfla
 ## 3. Create the private dashboard
 1. Create a second Apps Script project named `Nina Product Intelligence Dashboard`.
 2. Add four files: `Code.gs`, `Dashboard.html`, `Styles.html`, and `Client.html`. Copy the matching files from `nina-analytics/dashboard/`.
-3. In `Code.gs`, replace `PASTE_YOUR_GOOGLE_SHEET_ID_HERE` with the same spreadsheet ID.
+3. The spreadsheet ID has already been configured in this repository's dashboard backend.
 4. Save, then select **Deploy → New deployment → Web app**.
 5. Set **Execute as: Me** and **Who has access: Only myself**. Do not make this dashboard public.
 6. Deploy and authorize. Bookmark the Web app URL ending in `/exec`. That is your private analytics dashboard.
