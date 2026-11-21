@@ -21,3 +21,5 @@ function unlinkTicket(id){const sh=sheet_(),data=rows_(),i=data.findIndex(r=>Str
 function archiveTicket(id){const sh=sheet_(),data=rows_(),i=data.findIndex(r=>String(r[0])===String(id));if(i<0)throw new Error("Ticket not found");const row=i+2;sh.getRange(row,6).setValue("Closed");sh.getRange(row,13).setValue(true);return {ok:true};}
 function completeEnhancement(id){const sh=sheet_(),data=rows_(),i=data.findIndex(r=>String(r[0])===String(id)&&String(r[10])==="enhancement");if(i<0)throw new Error("Enhancement not found");const row=i+2;sh.getRange(row,6).setValue("Done");sh.getRange(row,13).setValue(true);data.forEach((r,j)=>{if(String(r[11])===String(id)){sh.getRange(j+2,6).setValue("Closed");sh.getRange(j+2,13).setValue(true);}});return {ok:true};}
 function iso_(v){const d=v instanceof Date?v:new Date(v);return isNaN(d.getTime())?"":d.toISOString();}
+
+function getDashboardUrl(){return ScriptApp.getService().getUrl();}
