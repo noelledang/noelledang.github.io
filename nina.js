@@ -8,6 +8,8 @@
   const prompts = document.getElementById("nina-prompts");
   const form = document.getElementById("nina-form");
   const input = document.getElementById("nina-input");
+  // Set this to the Cloudflare Pages /api/collect URL after the dashboard backend is deployed.
+  const NINA_COLLECT_ENDPOINT = "";
   if (!launch || !panel || !close || !log || !prompts || !form || !input) return;
   let topics = [];
   const initialLoadTime = performance.now();
@@ -168,6 +170,14 @@
       bubble(found.answer, "bot", found.link, found.linkLabel);
       awaitingTraitExamples = found.id === "three-words" && !!found.examplesAnswer;
     } else {
+      // Log only unanswered questions. Collection is disabled until the endpoint is configured.
+      if (NINA_COLLECT_ENDPOINT) {
+        fetch(NINA_COLLECT_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        }).catch(() => {});
+      }
       bubble("I don't have a verified answer for that in Noelle's portfolio yet. Please explore the case studies or reach out to Noelle directly.", "bot", "mailto:Dang.Noelle@gmail.com", "Email Noelle");
     }
   }
