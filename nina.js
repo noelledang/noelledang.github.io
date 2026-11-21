@@ -188,13 +188,13 @@
     input.value = "";
     ask(q);
   });
-  fetch("portfolio-knowledge.json?v=20261111-leadership-1", { cache: "no-store" })
+  fetch("portfolio-knowledge.json?v=20261121-capabilities-1", { cache: "no-store" })
     .then((response) => { if (!response.ok) throw new Error("Unable to load portfolio data"); return response.json(); })
     .then((data) => {
       topics = Array.isArray(data.topics) ? data.topics : [];
       indexTopics();
       bubble("Hi! I'm Nina, Noelle's portfolio guide. Ask about her technical support experience, tools, projects, or troubleshooting case studies.", "bot");
-      ["Why should we hire Noelle?","How does Noelle approach unfamiliar technical issues?","Show me some of Noelle's projects.","What could Noelle contribute in her first 90 days?","Explain Noelle's career gap."].forEach((question) => {
+      ["What can Noelle do?","Show me some of Noelle's projects.","How does Noelle approach unfamiliar technical issues?","What could Noelle contribute in her first 90 days?","Why should we hire Noelle?","Explain Noelle's career gap."].forEach((question) => {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "nina-question";
