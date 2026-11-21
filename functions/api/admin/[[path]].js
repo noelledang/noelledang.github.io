@@ -19,7 +19,7 @@ const respond=(body,status=200)=>new Response(JSON.stringify(body),{status,heade
 export async function onRequest({request,env,params}){
   if(!(await verifyAccess(request,env)))return respond({error:"Unauthorized. Sign in with your approved Cloudflare Access account."},401);
   if(!env.DB)return respond({error:"D1 database binding is missing."},503);
-  const parts=Array.isArray(params.path)?params.path:[],route=parts.join("/"),url=new URL(request.url);
+  const rawPath=params.path,parts=Array.isArray(rawPath)?rawPath:(typeof rawPath==="string"?rawPath.split("/").filter(Boolean):[]),route=parts.join("/"),url=new URL(request.url);
   try{
     if(request.method==="GET"&&route==="summary"){
       const row=await env.DB.prepare("SELECT COUNT(*) total_groups,COALESCE(SUM(occurrences),0) total_events,SUM(CASE WHEN status NOT IN ('Resolved','Won''t fix') THEN 1 ELSE 0 END) open_groups,SUM(CASE WHEN status='Resolved' THEN 1 ELSE 0 END) resolved_groups,SUM(CASE WHEN occurrences>1 THEN 1 ELSE 0 END) recurring_groups,SUM(CASE WHEN julianday(first_seen)>=julianday('now','-7 days') THEN 1 ELSE 0 END) new_week FROM question_clusters").first();
