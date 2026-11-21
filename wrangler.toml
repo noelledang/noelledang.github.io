@@ -1,0 +1,12 @@
+name = "nina-product-intelligence"
+compatibility_date = "2026-11-21"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nina-product-intelligence"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+[vars]
+ACCESS_TEAM_DOMAIN = "REPLACE_WITH_YOUR_CLOUDFLARE_TEAM.cloudflareaccess.com"
+ACCESS_AUD = "REPLACE_WITH_YOUR_CLOUDFLARE_ACCESS_APPLICATION_AUD"
