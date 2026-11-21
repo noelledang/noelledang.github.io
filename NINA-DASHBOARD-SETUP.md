@@ -5,7 +5,7 @@ This version uses **Google Sheets + Apps Script only**. It does not use Cloudfla
 ## Included
 - `nina-analytics/collector/Code.gs`: public, write-only collector.
 - `nina-analytics/dashboard/Code.gs`, `Dashboard.html`, `Styles.html`, `Client.html`: private dashboard with Overview, Question Inbox, Trends, CSV export, and question editing.
-- Exact repeated phrasings are grouped; every occurrence is retained in the Events tab.
+- Exact repeated phrasings are grouped; every occurrence is retained in the Events tab.\n- Jira-style workflow: select related inbox tickets, create one enhancement, and automatically close/archive the linked tickets under it.\n- Active Enhancements and Archived views keep completed work out of the active inbox while preserving linked history and CSV exports.\n- Archived enhancement tickets retain their child question history, which is accessible from the enhancement detail panel rather than cluttering the archive list.
 
 ## 1. Create the spreadsheet
 1. Create a Google Sheet named **Nina Analytics**.
@@ -37,7 +37,7 @@ In the portfolio repository's `nina.js`, replace `PASTE_COLLECTOR_WEB_APP_URL_HE
 
 Add a brief notice to your portfolio that unanswered questions may be collected to improve the assistant.
 
-## Data and limitations
+## Ticket workflow\n- Individual unanswered questions start as active question tickets. You can edit category, priority, status, and notes, or archive a ticket manually.\n- Select one or more related questions in the inbox and choose **Create enhancement**. Give the enhancement a title, description/acceptance criteria, category, and priority.\n- Creating it automatically closes and archives the selected question tickets, links them to the enhancement, and removes them from the active inbox. Open the enhancement to see its linked questions.\n- When the improvement is complete, choose **Mark done & archive**. The enhancement moves to Archive; its linked question history remains attached. Archived tickets stay included in all-time analytics.\n\n## Data and limitations
 - The collector is public and write-only. Do not add dashboard read/update methods to that project.
 - The dashboard is a separate deployment restricted to your Google account.
 - Only question text and timestamps are stored. The scripts do not request or store names, emails, IP addresses, or session identifiers.
