@@ -8,8 +8,8 @@
   const prompts = document.getElementById("nina-prompts");
   const form = document.getElementById("nina-form");
   const input = document.getElementById("nina-input");
-  // Set this to the Cloudflare Pages /api/collect URL after the dashboard backend is deployed.
-  const NINA_COLLECT_ENDPOINT = "";
+  // Paste the public Google Apps Script collector URL here after deployment.
+  const NINA_COLLECT_ENDPOINT = "PASTE_COLLECTOR_WEB_APP_URL_HERE";
   if (!launch || !panel || !close || !log || !prompts || !form || !input) return;
   let topics = [];
   const initialLoadTime = performance.now();
@@ -171,10 +171,10 @@
       awaitingTraitExamples = found.id === "three-words" && !!found.examplesAnswer;
     } else {
       // Log only unanswered questions. Collection is disabled until the endpoint is configured.
-      if (NINA_COLLECT_ENDPOINT) {
+      if (NINA_COLLECT_ENDPOINT.startsWith("https://script.google.com/macros/s/")) {
         fetch(NINA_COLLECT_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: "POST", mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({ question })
         }).catch(() => {});
       }
