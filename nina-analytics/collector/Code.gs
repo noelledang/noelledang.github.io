@@ -9,8 +9,8 @@ const EVENT_HEADERS = ["id","question_id","question","created_at"];
 function doPost(e) {
   try {
     const body = JSON.parse((e && e.postData && e.postData.contents) || "{}");
-    const question = String(body.question || "").trim().replace(/\\s+/g, " ").slice(0, 1000);
-    const normalized = question.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().replace(/\\s+/g, " ");
+    const question = String(body.question || "").trim().replace(/\s+/g, " ").slice(0, 1000);
+    const normalized = question.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
     if (!normalized) return output({ ok: false, error: "Invalid question" });
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const questions = getOrCreateSheet_(ss, QUESTIONS_TAB, QUESTION_HEADERS);
