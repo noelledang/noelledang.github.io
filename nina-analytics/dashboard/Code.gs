@@ -1,7 +1,7 @@
 // Nina Product Intelligence — private Apps Script dashboard backend.
 // Sheet columns: id, question/title, normalized, category, priority, status, occurrences,
 // first_seen, last_seen, notes/description, type, parent_id, archived, created_at.
-const SPREADSHEET_ID = "PASTE_YOUR_GOOGLE_SHEET_ID_HERE";
+const SPREADSHEET_ID = "13OexAsX_0l6_OVr0LpVcwVfMXBg2J2981F2ESut-SXY";
 const QUESTIONS_TAB = "Questions";
 const EVENTS_TAB = "Events";
 const HEADERS = ["id","question","normalized","category","priority","status","occurrences","first_seen","last_seen","notes","type","parent_id","archived","created_at"];
