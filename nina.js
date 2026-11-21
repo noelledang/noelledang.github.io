@@ -14,8 +14,8 @@
   let topics = [];
   const initialLoadTime = performance.now();
   let chatInteractedWith = false;
-  function bubble(message, type, link, label) {
-    const entry = document.createElement("p");
+  function bubble(message, type, link, label, feedback) {
+    const entry = document.createElement("div");
     entry.className = "nina-bubble " + type;
     entry.textContent = message; // Never interpret visitor input as HTML.
     if (link && label) {
@@ -25,7 +25,19 @@
       entry.appendChild(anchor);
     }
     log.appendChild(entry);
+    if (feedback) addAnswerFeedback(entry, feedback);
     log.scrollTop = log.scrollHeight;
+    return entry;
+  }
+  function addAnswerFeedback(entry, context) {
+    const panel=document.createElement("div");panel.className="nina-csat";
+    const prompt=document.createElement("span");prompt.textContent="Was this answer helpful?";
+    const actions=document.createElement("div");actions.className="nina-csat-actions";
+    const yes=document.createElement("button");yes.type="button";yes.textContent="👍 Yes";
+    const no=document.createElement("button");no.type="button";no.textContent="👎 Not quite";actions.append(yes,no);panel.append(prompt,actions);entry.appendChild(panel);
+    const send=(rating,comment)=>{yes.disabled=true;no.disabled=true;fetch(NINA_COLLECT_ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({type:"feedback",question:context.question,topic_id:context.topicId,topic_title:context.topicTitle,rating,comment})}).catch(()=>{});panel.textContent="Thanks for helping improve Nina!";log.scrollTop=log.scrollHeight;};
+    yes.addEventListener("click",()=>send("helpful",""));
+    no.addEventListener("click",()=>{actions.remove();const wrap=document.createElement("div");wrap.className="nina-csat-comment";const field=document.createElement("textarea");field.rows=2;field.maxLength=1000;field.placeholder="What were you hoping to learn? (optional)";const submit=document.createElement("button");submit.type="button";submit.textContent="Submit feedback";submit.addEventListener("click",()=>send("not_helpful",field.value.trim()));wrap.append(field,submit);panel.appendChild(wrap);field.focus();});
   }
   function toggle(open) {
     panel.hidden = !open;
@@ -167,7 +179,7 @@
     }
     const found = matchTopic(question);
     if (found) {
-      bubble(found.answer, "bot", found.link, found.linkLabel);
+      bubble(found.answer, "bot", found.link, found.linkLabel, {question,topicId:found.id,topicTitle:found.title});
       awaitingTraitExamples = found.id === "three-words" && !!found.examplesAnswer;
     } else {
       // Log only unanswered questions. Collection is disabled until the endpoint is configured.
@@ -188,7 +200,7 @@
     input.value = "";
     ask(q);
   });
-  fetch("portfolio-knowledge.json?v=20261121-capabilities-1", { cache: "no-store" })
+  fetch("portfolio-knowledge.json?v=20261121-csat-1", { cache: "no-store" })
     .then((response) => { if (!response.ok) throw new Error("Unable to load portfolio data"); return response.json(); })
     .then((data) => {
       topics = Array.isArray(data.topics) ? data.topics : [];
