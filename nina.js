@@ -8,6 +8,8 @@
   const prompts = document.getElementById("nina-prompts");
   const form = document.getElementById("nina-form");
   const input = document.getElementById("nina-input");
+  // Paste the public Google Apps Script collector URL here after deployment.
+  const NINA_COLLECT_ENDPOINT = "https://script.google.com/macros/s/AKfycbxh2LrSpXnwN_ll1d2c1mX3jRoX7og2O27YmkF7lmxRnHOLqKecHdhcLnV3JKOUNuN6/exec";
   if (!launch || !panel || !close || !log || !prompts || !form || !input) return;
   let topics = [];
   const initialLoadTime = performance.now();
@@ -168,6 +170,14 @@
       bubble(found.answer, "bot", found.link, found.linkLabel);
       awaitingTraitExamples = found.id === "three-words" && !!found.examplesAnswer;
     } else {
+      // Log only unanswered questions. Collection is disabled until the endpoint is configured.
+      if (NINA_COLLECT_ENDPOINT.startsWith("https://script.google.com/macros/s/")) {
+        fetch(NINA_COLLECT_ENDPOINT, {
+          method: "POST", mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ question })
+        }).catch(() => {});
+      }
       bubble("I don't have a verified answer for that in Noelle's portfolio yet. Please explore the case studies or reach out to Noelle directly.", "bot", "mailto:Dang.Noelle@gmail.com", "Email Noelle");
     }
   }
