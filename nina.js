@@ -203,7 +203,11 @@
   }
   function askForRephrase() {
     awaitingRephrase = true;
-    bubble("No problem! Could you rephrase that or give me a little more context? You have up to two tries.", "bot");
+    const remaining = MAX_REPHRASES - rephraseAttempts;
+    const limitNote = remaining === MAX_REPHRASES
+      ? "You can rephrase up to two times."
+      : "You have " + remaining + " rephrase attempt left.";
+    bubble("No problem! Could you rephrase that or give me a little more context? " + limitNote, "bot");
     input.focus();
   }
   function showFallback(question) {
