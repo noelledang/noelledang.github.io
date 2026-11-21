@@ -167,7 +167,7 @@
       if (confirmed) {
         awaitingTraitExamples = false;
         const traits = topics.find(topic => topic.id === "three-words");
-        if (traits && traits.examplesAnswer) bubble(traits.examplesAnswer, "bot", "#experience", "See her experience");
+        if (traits && traits.examplesAnswer) bubble(traits.examplesAnswer, "bot", "#experience", "See her experience", {question,topicId:traits.id,topicTitle:traits.title});
         return;
       }
       if (declined) {
