@@ -9,7 +9,7 @@
   const form = document.getElementById("nina-form");
   const input = document.getElementById("nina-input");
   // Paste the public Google Apps Script collector URL here after deployment.
-  const NINA_COLLECT_ENDPOINT = "PASTE_COLLECTOR_WEB_APP_URL_HERE";
+  const NINA_COLLECT_ENDPOINT = "https://script.google.com/macros/s/AKfycbxh2LrSpXnwN_ll1d2c1mX3jRoX7og2O27YmkF7lmxRnHOLqKecHdhcLnV3JKOUNuN6/exec";
   if (!launch || !panel || !close || !log || !prompts || !form || !input) return;
   let topics = [];
   const initialLoadTime = performance.now();
