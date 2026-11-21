@@ -33,14 +33,14 @@ This version uses **Google Sheets + Apps Script only**. It does not use Cloudfla
 Google's documentation explains web app access and execution settings: https://developers.google.com/apps-script/guides/web
 
 ## 4. Connect Nina
-In the portfolio repository's `nina.js`, replace `PASTE_COLLECTOR_WEB_APP_URL_HERE` with the public collector URL from step 2. The call runs only when Nina uses its fallback answer. It sends only unanswered question text, using a fire-and-forget request; Nina does not need to read a response.
+In the portfolio repository's `nina.js`, replace `PASTE_COLLECTOR_WEB_APP_URL_HERE` with the public collector URL from step 2. The collector URL receives both unanswered questions and optional answer ratings. Feedback is submitted using a fire-and-forget request; Nina does not need to read a response. Deploy the updated collector code to enable CSAT collection.
 
 Add a brief notice to your portfolio that unanswered questions may be collected to improve the assistant.
 
 ## Ticket workflow\n- Individual unanswered questions start as active question tickets. You can edit category, priority, status, and notes, or archive a ticket manually.\n- Select one or more related questions in the inbox and choose **Create enhancement**. Give the enhancement a title, description/acceptance criteria, category, and priority.\n- Creating it automatically closes and archives the selected question tickets, links them to the enhancement, and removes them from the active inbox. Open the enhancement to see its linked questions.\n- When the improvement is complete, choose **Mark done & archive**. The enhancement moves to Archive; its linked question history remains attached. Archived tickets stay included in all-time analytics.\n\n## Data and limitations
 - The collector is public and write-only. Do not add dashboard read/update methods to that project.
 - The dashboard is a separate deployment restricted to your Google account.
-- Only question text and timestamps are stored. The scripts do not request or store names, emails, IP addresses, or session identifiers.
+- The collector stores unanswered question text and timestamps, plus optional answer feedback (question, answer topic, rating, optional comment, and timestamp). It does not request or store names, emails, IP addresses, or session identifiers.\n- The dashboard’s **Nina CSAT** view reports helpful ratings divided by all ratings, with topic-level performance and optional visitor comments.
 - Exact phrasings are grouped after basic normalization. Semantically similar but differently worded questions are not automatically merged.
 - Apps Script and Sheets have quotas and usage limits. This is intentionally a lightweight personal analytics tool, not a high-volume production system.
 - Metrics remain empty until visitors ask Nina questions that reach its fallback.
