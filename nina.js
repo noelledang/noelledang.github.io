@@ -12,6 +12,7 @@
   const NINA_COLLECT_ENDPOINT = "https://script.google.com/macros/s/AKfycbxh2LrSpXnwN_ll1d2c1mX3jRoX7og2O27YmkF7lmxRnHOLqKecHdhcLnV3JKOUNuN6/exec";
   if (!launch || !panel || !close || !log || !prompts || !form || !input) return;
   let topics = [];
+  let clarificationConfig = { ambiguousQuestionPatterns: [], intents: [] };
   const initialLoadTime = performance.now();
   let chatInteractedWith = false;
   function bubble(message, type, link, label) {
@@ -144,9 +145,84 @@
     if (!first || first.score < 4 || (first.score < 5 && runnerUp && first.score - runnerUp.score < 0.5)) return null;
     return first.topic;
   }
+  function clearClarification() {
+    log.querySelectorAll(".nina-clarification").forEach(node => node.remove());
+  }
+  function findClarification(question) {
+    const normalized = normalizeQuestion(question);
+    const patterns = clarificationConfig.ambiguousQuestionPatterns || [];
+    const isAmbiguous = patterns.some(pattern => {
+      const phrase = normalizeQuestion(pattern);
+      return phrase && normalized.includes(phrase);
+    });
+    return isAmbiguous ? (clarificationConfig.intents || []) : [];
+  }
+  function showClarification(question, intents) {
+    const panel = document.createElement("div");
+    panel.className = "nina-clarification";
+    const prompt = document.createElement("p");
+    prompt.textContent = "I can take that a few ways. What would you like to know?";
+    const label = document.createElement("label");
+    label.textContent = "Choose what you mean";
+    const select = document.createElement("select");
+    select.className = "nina-clarification-select";
+    select.setAttribute("aria-label", "Choose what you want to know about Noelle");
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Select an option...";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    select.appendChild(placeholder);
+    intents.forEach(intent => {
+      const option = document.createElement("option");
+      option.value = intent.id;
+      option.textContent = intent.label;
+      select.appendChild(option);
+    });
+    const actions = document.createElement("div");
+    actions.className = "nina-clarification-actions";
+    const confirm = document.createElement("button");
+    confirm.type = "button";
+    confirm.className = "nina-clarification-confirm";
+    confirm.textContent = "Confirm";
+    confirm.disabled = true;
+    select.addEventListener("change", () => { confirm.disabled = !select.value; });
+    confirm.addEventListener("click", () => {
+      const intent = intents.find(item => item.id === select.value);
+      const topic = intent && topics.find(item => item.id === intent.topicId);
+      if (!topic) {
+        panel.remove();
+        bubble("I couldn't match that selection to a verified answer. Please rephrase your question.", "bot");
+        input.focus();
+        return;
+      }
+      panel.remove();
+      bubble(topic.answer, "bot", topic.link, topic.linkLabel);
+      awaitingTraitExamples = topic.id === "three-words" && !!topic.examplesAnswer;
+    });
+    const rephrase = document.createElement("button");
+    rephrase.type = "button";
+    rephrase.className = "nina-clarification-rephrase";
+    rephrase.textContent = "None of these — rephrase";
+    rephrase.addEventListener("click", () => {
+      panel.remove();
+      bubble("No problem! Try rephrasing your question, and I'll narrow it down.", "bot");
+      input.focus();
+    });
+    actions.append(confirm, rephrase);
+    panel.append(prompt, label, select, actions);
+    log.appendChild(panel);
+    log.scrollTop = log.scrollHeight;
+  }
   let awaitingTraitExamples = false;
   function ask(question) {
+    clearClarification();
     bubble(question, "visitor");
+    const clarificationOptions = findClarification(question);
+    if (clarificationOptions.length) {
+      showClarification(question, clarificationOptions);
+      return;
+    }
     const reply = question.toLowerCase().replace(/[^a-z ]/g, " ").replace(/\s+/g, " ").trim();
     if (awaitingTraitExamples) {
       const confirmed = /^(yes|yes please|yeah|yep|sure|sure please|of course|please|absolutely|definitely|go ahead|tell me more|show me examples|give me examples|examples please|i would|i d love that)$/.test(reply)
@@ -192,6 +268,7 @@
     .then((response) => { if (!response.ok) throw new Error("Unable to load portfolio data"); return response.json(); })
     .then((data) => {
       topics = Array.isArray(data.topics) ? data.topics : [];
+      clarificationConfig = data.clarification || clarificationConfig;
       indexTopics();
       bubble("Hi! I'm Nina, Noelle's portfolio guide. Ask about her technical support experience, tools, projects, or troubleshooting case studies.", "bot");
       ["What can Noelle do?","Show me some of Noelle's projects.","How does Noelle approach unfamiliar technical issues?","What could Noelle contribute in her first 90 days?","Why should we hire Noelle?","Explain Noelle's career gap."].forEach((question) => {
