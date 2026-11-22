@@ -22,6 +22,10 @@ for (const [question, expected] of cases) {
   });
 }
 
+test("does not misroute a career-gap explanation as communication", () => {
+  assert.equal(NinaBehavior.analyze("How does she explain her career gap?"), null);
+});
+
 test("does not force a behavior match for an unrelated question", () => {
   assert.equal(NinaBehavior.analyze("What is her favorite movie?"), null);
 });
