@@ -37,7 +37,7 @@
     },
     {
       behaviorId: "communication",
-      topicId: "cross-functional",
+      topicId: "communication",
       priority: 10,
       patterns: [
         /\b(?:technical jargon|nontechnical|non technical|plain language|easy to understand|explain technical|translate technical)\b/,
