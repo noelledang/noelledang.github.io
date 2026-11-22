@@ -22,6 +22,10 @@ for (const [question, expected] of cases) {
   });
 }
 
+test("routes technical communication to its dedicated evidence topic", () => {
+  assert.equal(NinaBehavior.analyze("Can she explain technical jargon in simple language?")?.topicId, "communication");
+});
+
 test("does not misroute a career-gap explanation as communication", () => {
   assert.equal(NinaBehavior.analyze("How does she explain her career gap?"), null);
 });
