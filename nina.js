@@ -12,6 +12,7 @@
   const NINA_COLLECT_ENDPOINT = "https://script.google.com/macros/s/AKfycbxh2LrSpXnwN_ll1d2c1mX3jRoX7og2O27YmkF7lmxRnHOLqKecHdhcLnV3JKOUNuN6/exec";
   if (!launch || !panel || !close || !log || !prompts || !form || !input) return;
   let topics = [];
+  let clarificationConfig = { ambiguousQuestionPatterns: [], intents: [] };
   const initialLoadTime = performance.now();
   let chatInteractedWith = false;
   function bubble(message, type, link, label) {
@@ -144,9 +145,95 @@
     if (!first || first.score < 4 || (first.score < 5 && runnerUp && first.score - runnerUp.score < 0.5)) return null;
     return first.topic;
   }
+  function clearClarification() {
+    log.querySelectorAll(".nina-clarification").forEach(node => node.remove());
+  }
+  function findClarification(question) {
+    const normalized = normalizeQuestion(question);
+    const patterns = clarificationConfig.ambiguousQuestionPatterns || [];
+    const isAmbiguous = patterns.some(pattern => {
+      const phrase = normalizeQuestion(pattern);
+      return phrase && normalized.includes(phrase);
+    });
+    return isAmbiguous ? (clarificationConfig.intents || []) : [];
+  }
   let awaitingTraitExamples = false;
+  let awaitingRephrase = false;
+  let rephraseAttempts = 0;
+  const MAX_REPHRASES = 2;
+  function showClarification(question, intents) {
+    const panel = document.createElement("div");
+    panel.className = "nina-clarification";
+    const prompt = document.createElement("p");
+    prompt.textContent = "I can take that a few ways. What would you like to know?";
+    const choices = document.createElement("div");
+    choices.className = "nina-clarification-grid";
+    choices.setAttribute("role", "group");
+    choices.setAttribute("aria-label", "Choose what you want to know about Noelle");
+    intents.forEach(intent => {
+      const choice = document.createElement("button");
+      choice.type = "button";
+      choice.className = "nina-clarification-choice";
+      choice.textContent = intent.label;
+      choice.addEventListener("click", () => {
+        const topic = topics.find(item => item.id === intent.topicId);
+        panel.remove();
+        if (!topic) {
+          askForRephrase();
+          return;
+        }
+        awaitingRephrase = false;
+        rephraseAttempts = 0;
+        bubble(topic.answer, "bot", topic.link, topic.linkLabel);
+        awaitingTraitExamples = topic.id === "three-words" && !!topic.examplesAnswer;
+      });
+      choices.appendChild(choice);
+    });
+    const rephrase = document.createElement("button");
+    rephrase.type = "button";
+    rephrase.className = "nina-clarification-rephrase";
+    rephrase.textContent = "None of these — let me rephrase";
+    rephrase.addEventListener("click", () => {
+      panel.remove();
+      askForRephrase();
+    });
+    panel.append(prompt, choices, rephrase);
+    log.appendChild(panel);
+    log.scrollTop = log.scrollHeight;
+  }
+  function askForRephrase() {
+    awaitingRephrase = true;
+    const remaining = MAX_REPHRASES - rephraseAttempts;
+    const limitNote = remaining === MAX_REPHRASES
+      ? "You can rephrase up to two times."
+      : "You have " + remaining + " rephrase attempt left.";
+    bubble("No problem! Could you rephrase that or give me a little more context? " + limitNote, "bot");
+    input.focus();
+  }
+  function showFallback(question) {
+    if (NINA_COLLECT_ENDPOINT.startsWith("https://script.google.com/macros/s/")) {
+      fetch(NINA_COLLECT_ENDPOINT, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ question })
+      }).catch(() => {});
+    }
+    bubble("I'm sorry, but I'm having trouble understanding that question. I don't want to give you an inaccurate answer. Feel free to explore the suggested questions or reach out to Noelle directly if you'd like to know more!", "bot", "mailto:Dang.Noelle@gmail.com", "Email Noelle");
+    awaitingRephrase = false;
+    rephraseAttempts = 0;
+  }
   function ask(question) {
+    const isRephrase = awaitingRephrase;
+    if (isRephrase) rephraseAttempts += 1;
+    else rephraseAttempts = 0;
+    awaitingRephrase = false;
+    clearClarification();
     bubble(question, "visitor");
+    const clarificationOptions = findClarification(question);
+    if (clarificationOptions.length) {
+      showClarification(question, clarificationOptions);
+      return;
+    }
     const reply = question.toLowerCase().replace(/[^a-z ]/g, " ").replace(/\s+/g, " ").trim();
     if (awaitingTraitExamples) {
       const confirmed = /^(yes|yes please|yeah|yep|sure|sure please|of course|please|absolutely|definitely|go ahead|tell me more|show me examples|give me examples|examples please|i would|i d love that)$/.test(reply)
@@ -154,12 +241,14 @@
       const declined = /^(no|no thanks|no thank you|not now|nope|nah)$/.test(reply);
       if (confirmed) {
         awaitingTraitExamples = false;
+        rephraseAttempts = 0;
         const traits = topics.find(topic => topic.id === "three-words");
         if (traits && traits.examplesAnswer) bubble(traits.examplesAnswer, "bot", "#experience", "See her experience");
         return;
       }
       if (declined) {
         awaitingTraitExamples = false;
+        rephraseAttempts = 0;
         bubble("Of course! Feel free to ask about Noelle's experience, projects, or technical skills.", "bot");
         return;
       }
@@ -167,18 +256,13 @@
     }
     const found = matchTopic(question);
     if (found) {
+      rephraseAttempts = 0;
       bubble(found.answer, "bot", found.link, found.linkLabel);
       awaitingTraitExamples = found.id === "three-words" && !!found.examplesAnswer;
+    } else if (isRephrase && rephraseAttempts >= MAX_REPHRASES) {
+      showFallback(question);
     } else {
-      // Log only unanswered questions. Collection is disabled until the endpoint is configured.
-      if (NINA_COLLECT_ENDPOINT.startsWith("https://script.google.com/macros/s/")) {
-        fetch(NINA_COLLECT_ENDPOINT, {
-          method: "POST", mode: "no-cors",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ question })
-        }).catch(() => {});
-      }
-      bubble("I don't have a verified answer for that in Noelle's portfolio yet. Please explore the case studies or reach out to Noelle directly.", "bot", "mailto:Dang.Noelle@gmail.com", "Email Noelle");
+      askForRephrase();
     }
   }
   form.addEventListener("submit", (event) => {
@@ -192,6 +276,7 @@
     .then((response) => { if (!response.ok) throw new Error("Unable to load portfolio data"); return response.json(); })
     .then((data) => {
       topics = Array.isArray(data.topics) ? data.topics : [];
+      clarificationConfig = data.clarification || clarificationConfig;
       indexTopics();
       bubble("Hi! I'm Nina, Noelle's portfolio guide. Ask about her technical support experience, tools, projects, or troubleshooting case studies.", "bot");
       ["What can Noelle do?","Show me some of Noelle's projects.","How does Noelle approach unfamiliar technical issues?","What could Noelle contribute in her first 90 days?","Why should we hire Noelle?","Explain Noelle's career gap."].forEach((question) => {
