@@ -264,6 +264,17 @@
       awaitingTraitExamples = false;
       return;
     }
+    // Behavioral intent recognition runs before broad keyword similarity.
+    // It maps recruiter-style questions to a curated topic with relevant evidence.
+    const behaviorMatch = window.NinaBehavior && window.NinaBehavior.analyze(question);
+    const behaviorTopic = behaviorMatch && topics.find(topic => topic.id === behaviorMatch.topicId);
+    if (behaviorTopic) {
+      rephraseAttempts = 0;
+      bubble(window.NinaLanguage ? window.NinaLanguage.buildAnswer(behaviorTopic, question) : behaviorTopic.answer, "bot", behaviorTopic.link, behaviorTopic.linkLabel);
+      lastAnsweredTopicId = behaviorTopic.id;
+      awaitingTraitExamples = behaviorTopic.id === "three-words" && !!behaviorTopic.examplesAnswer;
+      return;
+    }
     const found = matchTopic(question);
     if (found) {
       rephraseAttempts = 0;
