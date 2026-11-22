@@ -44,7 +44,7 @@ test("keeps the why-question opening distinct", () => {
 
 test("recognizes a contextual example follow-up", () => {
   assert.equal(NinaLanguage.resolveFollowUp("why-choose-noelle", "Can you give me an example?", topics), examplesTopic);
-  assert.equal(NinaLanguage.resolveFollowUp("why-choose-noelle", "Show me an example", topics), null);
+  assert.equal(NinaLanguage.resolveFollowUp("why-choose-noelle", "Show me an example", topics), examplesTopic);
   assert.equal(NinaLanguage.resolveFollowUp("overview", "Can you give me an example?", topics), null);
 });
 
