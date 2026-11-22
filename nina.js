@@ -12,6 +12,7 @@
   const NINA_COLLECT_ENDPOINT = "https://script.google.com/macros/s/AKfycbxh2LrSpXnwN_ll1d2c1mX3jRoX7og2O27YmkF7lmxRnHOLqKecHdhcLnV3JKOUNuN6/exec";
   if (!launch || !panel || !close || !log || !prompts || !form || !input) return;
   let topics = [];
+  let lastAnsweredTopicId = null;
   let clarificationConfig = { ambiguousQuestionPatterns: [], intents: [] };
   const initialLoadTime = performance.now();
   let chatInteractedWith = false;
@@ -184,7 +185,8 @@
         }
         awaitingRephrase = false;
         rephraseAttempts = 0;
-        bubble(topic.answer, "bot", topic.link, topic.linkLabel);
+        bubble(window.NinaLanguage ? window.NinaLanguage.buildAnswer(topic, question) : topic.answer, "bot", topic.link, topic.linkLabel);
+        lastAnsweredTopicId = topic.id;
         awaitingTraitExamples = topic.id === "three-words" && !!topic.examplesAnswer;
       });
       choices.appendChild(choice);
@@ -254,10 +256,19 @@
       }
       awaitingTraitExamples = false;
     }
+    const contextualFollowUp = window.NinaLanguage && window.NinaLanguage.resolveFollowUp(lastAnsweredTopicId, question, topics);
+    if (contextualFollowUp) {
+      rephraseAttempts = 0;
+      bubble(contextualFollowUp.answer, "bot", contextualFollowUp.link, contextualFollowUp.linkLabel);
+      lastAnsweredTopicId = contextualFollowUp.id;
+      awaitingTraitExamples = false;
+      return;
+    }
     const found = matchTopic(question);
     if (found) {
       rephraseAttempts = 0;
-      bubble(found.answer, "bot", found.link, found.linkLabel);
+      bubble(window.NinaLanguage ? window.NinaLanguage.buildAnswer(found, question) : found.answer, "bot", found.link, found.linkLabel);
+      lastAnsweredTopicId = found.id;
       awaitingTraitExamples = found.id === "three-words" && !!found.examplesAnswer;
     } else if (isRephrase && rephraseAttempts >= MAX_REPHRASES) {
       showFallback(question);
@@ -272,7 +283,7 @@
     input.value = "";
     ask(q);
   });
-  fetch("portfolio-knowledge.json?v=20261121-capabilities-1", { cache: "no-store" })
+  fetch("portfolio-knowledge.json?v=20261121-conversation-1", { cache: "no-store" })
     .then((response) => { if (!response.ok) throw new Error("Unable to load portfolio data"); return response.json(); })
     .then((data) => {
       topics = Array.isArray(data.topics) ? data.topics : [];
