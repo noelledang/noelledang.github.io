@@ -414,9 +414,12 @@
         "would you hire noelle",
         "would noelle be a good hire",
         "would noelle be a good fit",
-        "should we hire noelle"
+        "should we hire noelle",
+        "why is noelle a good hire",
+        "what makes noelle a good hire",
+        "what makes her a good hire"
       ],
-      "answer": "Because Noelle doesn't just resolve tickets. She finds ways to prevent them. With 4+ years of B2B SaaS experience and 98% SLA compliance, she combines technical troubleshooting expertise with empathy, clear communication, and genuine customer advocacy. She's proactive in identifying root causes, improving workflows, and empowering teammates through knowledge sharing. Hiring Noelle means gaining someone who doesn't just support your product, but actively works to improve its performance and user experience.",
+      "answer": "With 4+ years of B2B SaaS experience and 98% SLA compliance, she combines technical troubleshooting expertise with empathy, clear communication, and genuine customer advocacy. She's proactive in identifying root causes, improving workflows, and empowering teammates through knowledge sharing. Hiring Noelle means gaining someone who doesn't just support your product, but actively works to improve its performance and user experience.",
       "link": "#experience",
       "linkLabel": "Explore her experience and impact",
       "responseOpenings": {
@@ -943,7 +946,6 @@
       "what do you think of noelle",
       "what are your thoughts on noelle",
       "how would you assess noelle",
-      "should we hire noelle",
       "why is noelle a good candidate",
       "what makes noelle stand out"
     ],
