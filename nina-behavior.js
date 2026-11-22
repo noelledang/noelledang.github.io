@@ -41,7 +41,7 @@
       priority: 10,
       patterns: [
         /\b(?:technical jargon|nontechnical|non technical|plain language|easy to understand|explain technical|translate technical)\b/,
-        /\b(?:communicat\w*|explain\w*|translate\w*)\b/
+        /\b(?:clear communication|communication skills|communicat\w* (?:clearly|well|effectively|with customers|with teams|with stakeholders)|explain\w* (?:technical issues|complex issues|things clearly)|translate\w* (?:technical|complex)|put (?:technical )?(?:issues|concepts) in simple terms)\b/
       ]
     },
     {
