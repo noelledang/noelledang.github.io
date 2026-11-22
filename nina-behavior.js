@@ -49,7 +49,7 @@
       topicId: "team-player",
       priority: 10,
       patterns: [
-        /\b(?:team player|teamwork|collaborat\w*|work well with others|works well with others|partner\w* with|cross functional|good with people|people skills)\b/
+        /\b(?:team player|teamwork|collaborat\w*|work well with others|works well with others|work well with (?:other )?(?:teams|people|colleagues)|partner\w* with|cross functional|good with people|people skills)\b/
       ]
     },
     {
@@ -81,7 +81,7 @@
       topicId: "case-prioritization",
       priority: 10,
       patterns: [
-        /\b(?:prioriti\w*|triage|competing (?:priorities|cases)|manage multiple (?:tasks|tickets|priorities)|decide what to work on first)\b/
+        /\b(?:prioritiz\w*|prioritis\w*|triage|competing (?:priorities|cases)|manage multiple (?:tasks|tickets|priorities)|decide what to work on first)\b/
       ]
     },
     {
@@ -89,7 +89,7 @@
       topicId: "difficult-case",
       priority: 9,
       patterns: [
-        /\b(?:problem solv\w*|troubleshoot\w*|root cause|difficult (?:technical )?(?:problem|issue|situation)|complex (?:technical )?(?:problem|issue)|under pressure|think on her feet|figure out unfamiliar)\b/
+        /\b(?:problem solv\w*|solve difficult (?:technical )?(?:problems?|issues?)|troubleshoot\w*|root cause|difficult (?:technical )?(?:problems?|issues?|situations?)|complex (?:technical )?(?:problems?|issues?)|under pressure|think on her feet|figure out unfamiliar)\b/
       ]
     },
     {
@@ -97,7 +97,7 @@
       topicId: "documentation",
       priority: 9,
       patterns: [
-        /\b(?:process improvement|improve (?:a |the )?(?:process|workflow)|workflow improvement|reduce repeat|self service|knowledge base|make processes better)\b/
+        /\b(?:process improvement|improve (?:a |the )?(?:process(?:es)?|workflows?)|workflow improvement|reduce repeat|self service|knowledge base|make processes better)\b/
       ]
     },
     {
