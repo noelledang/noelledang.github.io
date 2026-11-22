@@ -8,10 +8,10 @@
 
   function normalize(value) {
     return String(value || "").toLowerCase()
-      .replace(/([a-z])'s\\b/g, "$1")
+      .replace(/([a-z])'s\b/g, "$1")
       .replace(/[^a-z0-9]+/g, " ")
       .trim()
-      .replace(/\\s+/g, " ");
+      .replace(/\s+/g, " ");
   }
 
   // Each rule describes the quality a recruiter is evaluating and the
@@ -22,7 +22,7 @@
       topicId: "job-performance",
       priority: 12,
       patterns: [
-        /\\b(?:good at (?:her|their) job|good at what she does|does she do a good job|does noelle do a good job|perform(?:s|ing)? well|effective at (?:her|the) job|job performance|work performance)\\b/
+        /\b(?:good at (?:her|their) job|good at what she does|does she do a good job|does noelle do a good job|perform(?:s|ing)? well|effective at (?:her|the) job|job performance|work performance)\b/
       ]
     },
     {
@@ -30,9 +30,9 @@
       topicId: "work-style",
       priority: 11,
       patterns: [
-        /\\b(?:work|works|working|handle|handles|solve|solves|troubleshoot|troubleshoots)? ?(?:independently|on her own|without (?:help|supervision|hand holding)|self sufficient|autonomously)\\b/,
-        /\\bcan she work alone\\b/,
-        /\\bdoes she need (?:a lot of )?supervision\\b/
+        /\b(?:work|works|working|handle|handles|solve|solves|troubleshoot|troubleshoots)? ?(?:independently|on her own|without (?:help|supervision|hand holding)|self sufficient|autonomously)\b/,
+        /\bcan she work alone\b/,
+        /\bdoes she need (?:a lot of )?supervision\b/
       ]
     },
     {
@@ -40,8 +40,8 @@
       topicId: "cross-functional",
       priority: 10,
       patterns: [
-        /\\b(?:technical jargon|nontechnical|non technical|plain language|easy to understand|explain technical|translate technical)\\b/,
-        /\\b(?:communicat\\w*|explain\\w*|translate\\w*)\\b/
+        /\b(?:technical jargon|nontechnical|non technical|plain language|easy to understand|explain technical|translate technical)\b/,
+        /\b(?:communicat\w*|explain\w*|translate\w*)\b/
       ]
     },
     {
@@ -49,7 +49,7 @@
       topicId: "team-player",
       priority: 10,
       patterns: [
-        /\\b(?:team player|teamwork|collaborat\\w*|work well with others|works well with others|partner\\w* with|cross functional|good with people|people skills)\\b/
+        /\b(?:team player|teamwork|collaborat\w*|work well with others|works well with others|partner\w* with|cross functional|good with people|people skills)\b/
       ]
     },
     {
@@ -57,7 +57,7 @@
       topicId: "frustrated-customers",
       priority: 11,
       patterns: [
-        /\\b(?:empath\\w*|frustrated customers|angry customers|difficult customers|customer complaints|customer advocacy|customer focused|customer empathy)\\b/
+        /\b(?:empath\w*|frustrated customers|angry customers|difficult customers|customer complaints|customer advocacy|customer focused|customer empathy)\b/
       ]
     },
     {
@@ -65,7 +65,7 @@
       topicId: "initiative",
       priority: 11,
       patterns: [
-        /\\b(?:take initiative|takes initiative|show initiative|demonstrate initiative|proactive|proactively|ownership|take ownership|takes ownership|go above and beyond|self starter)\\b/
+        /\b(?:take initiative|takes initiative|show initiative|demonstrate initiative|proactive|proactively|ownership|take ownership|takes ownership|go above and beyond|self starter)\b/
       ]
     },
     {
@@ -73,7 +73,7 @@
       topicId: "fast-learner",
       priority: 10,
       patterns: [
-        /\\b(?:adapt\\w*|fast learner|quick learner|learn\\w* quickly|pick up new (?:skills|tools|technology|concepts)|ramp up|learning agility)\\b/
+        /\b(?:adapt\w*|fast learner|quick learner|learn\w* quickly|pick up new (?:skills|tools|technology|concepts)|ramp up|learning agility)\b/
       ]
     },
     {
@@ -81,7 +81,7 @@
       topicId: "case-prioritization",
       priority: 10,
       patterns: [
-        /\\b(?:prioriti\\w*|triage|competing (?:priorities|cases)|manage multiple (?:tasks|tickets|priorities)|decide what to work on first)\\b/
+        /\b(?:prioriti\w*|triage|competing (?:priorities|cases)|manage multiple (?:tasks|tickets|priorities)|decide what to work on first)\b/
       ]
     },
     {
@@ -89,7 +89,7 @@
       topicId: "difficult-case",
       priority: 9,
       patterns: [
-        /\\b(?:problem solv\\w*|troubleshoot\\w*|root cause|difficult (?:technical )?(?:problem|issue|situation)|complex (?:technical )?(?:problem|issue)|under pressure|think on her feet|figure out unfamiliar)\\b/
+        /\b(?:problem solv\w*|troubleshoot\w*|root cause|difficult (?:technical )?(?:problem|issue|situation)|complex (?:technical )?(?:problem|issue)|under pressure|think on her feet|figure out unfamiliar)\b/
       ]
     },
     {
@@ -97,7 +97,7 @@
       topicId: "documentation",
       priority: 9,
       patterns: [
-        /\\b(?:process improvement|improve (?:a |the )?(?:process|workflow)|workflow improvement|reduce repeat|self service|knowledge base|make processes better)\\b/
+        /\b(?:process improvement|improve (?:a |the )?(?:process|workflow)|workflow improvement|reduce repeat|self service|knowledge base|make processes better)\b/
       ]
     },
     {
@@ -105,7 +105,7 @@
       topicId: "leadership-demonstration",
       priority: 9,
       patterns: [
-        /\\b(?:leadership|lead a team|mentor\\w*|train\\w* (?:new hires|teammates)|empower\\w* (?:the )?team|help others grow)\\b/
+        /\b(?:leadership|lead a team|mentor\w*|train\w* (?:new hires|teammates)|empower\w* (?:the )?team|help others grow)\b/
       ]
     }
   ];
